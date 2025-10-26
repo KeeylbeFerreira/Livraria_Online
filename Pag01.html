@@ -1,126 +1,195 @@
 <!DOCTYPE html>
-<html lang="pt-br" class="scroll-smooth">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Livraria do Ke</title>
-  <link rel="stylesheet" href="css/style.css" />
-  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Livraria do Ke - Descubra seu próximo livro favorito</title>
+  <meta name="description" content="A melhor livraria online com milhares de títulos. Explore ficção, não-ficção, clássicos e muito mais. Encontre seu próximo livro favorito na Livraria do Ke.">
+  <meta name="keywords" content="livraria online, livros, comprar livros, ficção, não-ficção, clássicos, bestsellers">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css">
 </head>
-
-<body class="bg-gray-50 text-gray-800">
-
-  <!-- Navbar -->
-  <header class="bg-white shadow-sm fixed w-full top-0 z-50">
-    <div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
-      <h1 class="text-xl font-bold text-indigo-700">📚 Livraria do Ke</h1>
-      <nav class="hidden md:flex space-x-6 text-gray-600">
-        <a href="#" class="hover:text-indigo-600">Início</a>
-        <a href="#" class="hover:text-indigo-600">Categorias</a>
-        <a href="#" class="hover:text-indigo-600">Sobre</a>
-        <a href="#" class="hover:text-indigo-600">Contato</a>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container header-content">
+      <div class="logo">📚 Livraria do Ke</div>
+      <nav class="nav">
+        <a href="#inicio">Início</a>
+        <a href="#populares">Populares</a>
+        <a href="#categorias">Categorias</a>
+        <a href="#novidades">Novidades</a>
       </nav>
-      <div class="flex items-center space-x-3">
-        <button class="p-2 bg-gray-100 rounded-full hover:bg-gray-200">🔍</button>
-        <button class="p-2 bg-gray-100 rounded-full hover:bg-gray-200">👤</button>
+      <div class="header-actions">
+        <button class="icon-btn" aria-label="Buscar">🔍</button>
+        <button class="icon-btn" aria-label="Conta">👤</button>
       </div>
     </div>
   </header>
 
   <!-- Hero -->
-  <section class="mt-20 bg-cover bg-center rounded-lg max-w-7xl mx-auto overflow-hidden hero-section">
-    <div class="bg-indigo-900 bg-opacity-60 text-white text-center py-20 px-6">
-      <h2 class="text-3xl md:text-4xl font-semibold mb-6">Descubra seu próximo livro favorito</h2>
-      <p class="mb-6">Milhares de títulos esperando por você. Encontre o seu agora!</p>
-      <div class="flex justify-center">
-        <input type="text" placeholder="Busque por título, autor, gênero..." class="w-2/3 md:w-1/3 px-4 py-2 rounded-l-lg text-gray-800 focus:outline-none" />
-        <button class="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2 rounded-r-lg font-semibold">Buscar</button>
+  <section id="inicio" class="hero">
+    <div class="hero-overlay">
+      <div class="container hero-content">
+        <h1 class="hero-title">Descubra seu próximo livro favorito</h1>
+        <p class="hero-subtitle">Milhares de títulos esperando por você</p>
+        <div class="search-box">
+          <input type="text" placeholder="Busque por título, autor ou categoria..." class="search-input">
+          <button class="search-btn">Buscar</button>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Populares -->
-  <section class="max-w-7xl mx-auto py-12 px-6">
-    <h3 class="text-2xl font-semibold mb-6">Populares da Semana</h3>
-    <div class="flex gap-6 overflow-x-auto pb-4">
-      <img src="https://m.media-amazon.com/images/I/41rU4U0MytL._SY445_SX342_.jpg" alt="O Alquimista" class="h-64 rounded-lg shadow-md hover:scale-105 transition" />
-      <img src="https://m.media-amazon.com/images/I/71kxa1-0zfL._SY466_.jpg" alt="1984" class="h-64 rounded-lg shadow-md hover:scale-105 transition" />
-      <img src="https://m.media-amazon.com/images/I/81Yb6d6L-OL._SY466_.jpg" alt="Dom Quixote" class="h-64 rounded-lg shadow-md hover:scale-105 transition" />
-      <img src="https://m.media-amazon.com/images/I/71FqIm7bTxL._SY466_.jpg" alt="A Metamorfose" class="h-64 rounded-lg shadow-md hover:scale-105 transition" />
-      <img src="https://m.media-amazon.com/images/I/71z2aF7VVFL._SY466_.jpg" alt="Orgulho e Preconceito" class="h-64 rounded-lg shadow-md hover:scale-105 transition" />
+  <!-- Populares da Semana -->
+  <section id="populares" class="section">
+    <div class="container">
+      <h2 class="section-title">Populares da Semana</h2>
+      <div class="books-scroll">
+        <div class="book-card">
+          <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=600&fit=crop" alt="Livro 1" class="book-image">
+          <div class="book-info">
+            <h4 class="book-title">O Alquimista</h4>
+            <p class="book-author">Paulo Coelho</p>
+          </div>
+        </div>
+        <div class="book-card">
+          <img src="https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&h=600&fit=crop" alt="Livro 2" class="book-image">
+          <div class="book-info">
+            <h4 class="book-title">1984</h4>
+            <p class="book-author">George Orwell</p>
+          </div>
+        </div>
+        <div class="book-card">
+          <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&h=600&fit=crop" alt="Livro 3" class="book-image">
+          <div class="book-info">
+            <h4 class="book-title">Dom Quixote</h4>
+            <p class="book-author">Miguel de Cervantes</p>
+          </div>
+        </div>
+        <div class="book-card">
+          <img src="https://images.unsplash.com/photo-1495640452828-3df6795cf331?w=400&h=600&fit=crop" alt="Livro 4" class="book-image">
+          <div class="book-info">
+            <h4 class="book-title">A Metamorfose</h4>
+            <p class="book-author">Franz Kafka</p>
+          </div>
+        </div>
+        <div class="book-card">
+          <img src="https://images.unsplash.com/photo-1524578271613-d550eacf6090?w=400&h=600&fit=crop" alt="Livro 5" class="book-image">
+          <div class="book-info">
+            <h4 class="book-title">Orgulho e Preconceito</h4>
+            <p class="book-author">Jane Austen</p>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
   <!-- Categorias -->
-  <section class="bg-white py-12">
-    <div class="max-w-7xl mx-auto px-6">
-      <h3 class="text-2xl font-semibold mb-6">Navegue por Categorias</h3>
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-        <div class="categoria">Ficção Científica</div>
-        <div class="categoria">Romance</div>
-        <div class="categoria">Biografia</div>
-        <div class="categoria">Fantasia</div>
-        <div class="categoria">Mistério</div>
-        <div class="categoria">Não-Ficção</div>
-        <div class="categoria">Clássicos</div>
-        <div class="categoria">Terror</div>
+  <section id="categorias" class="section section-categories">
+    <div class="container">
+      <h2 class="section-title">Navegue por Categorias</h2>
+      <div class="categories-grid">
+        <button class="category-btn">Ficção Científica</button>
+        <button class="category-btn">Romance</button>
+        <button class="category-btn">Biografia</button>
+        <button class="category-btn">Fantasia</button>
+        <button class="category-btn">Mistério</button>
+        <button class="category-btn">Não-Ficção</button>
+        <button class="category-btn">Clássicos</button>
+        <button class="category-btn">Terror</button>
       </div>
     </div>
   </section>
 
   <!-- Citação -->
-  <section class="bg-indigo-900 text-white text-center py-16 px-6">
-    <blockquote class="text-2xl italic max-w-3xl mx-auto">
-      “Um leitor vive mil vidas antes de morrer... O homem que nunca lê vive apenas uma.”
-      <footer class="mt-4 text-yellow-400">— George R.R. Martin</footer>
-    </blockquote>
+  <section class="quote-section">
+    <div class="container">
+      <blockquote class="quote">
+        "Um leitor vive mil vidas antes de morrer... O homem que nunca lê vive apenas uma."
+        <footer class="quote-author">— George R.R. Martin</footer>
+      </blockquote>
+    </div>
   </section>
 
   <!-- Novidades -->
-  <section class="max-w-7xl mx-auto py-12 px-6">
-    <h3 class="text-2xl font-semibold mb-6">Novidades</h3>
-    <div class="flex gap-6 overflow-x-auto pb-4">
-      <img src="https://m.media-amazon.com/images/I/71iBEwOQeSL._SY466_.jpg" alt="A Arte da Guerra" class="h-64 rounded-lg shadow-md hover:scale-105 transition" />
-      <img src="https://m.media-amazon.com/images/I/71i4aVQqN9L._SY466_.jpg" alt="O Hobbit" class="h-64 rounded-lg shadow-md hover:scale-105 transition" />
-      <img src="https://m.media-amazon.com/images/I/81bR8p2IhVL._SY466_.jpg" alt="Senhor dos Anéis" class="h-64 rounded-lg shadow-md hover:scale-105 transition" />
-      <img src="https://m.media-amazon.com/images/I/71IXHYH5E5L._SY466_.jpg" alt="Frankenstein" class="h-64 rounded-lg shadow-md hover:scale-105 transition" />
-      <img src="https://m.media-amazon.com/images/I/81JwM52sZJL._SY466_.jpg" alt="Moby Dick" class="h-64 rounded-lg shadow-md hover:scale-105 transition" />
-    </div>
-  </section>
-
-  <!-- Rodapé -->
-  <footer class="bg-indigo-950 text-white py-10 mt-10">
-    <div class="max-w-7xl mx-auto grid md:grid-cols-3 gap-6 px-6">
-      <div>
-        <h4 class="font-semibold text-lg mb-4">Livraria do Ke</h4>
-        <p class="text-sm text-gray-300">
-          A melhor livraria online com os títulos mais amados do mundo. Explore, leia e viva mil vidas.
-        </p>
-      </div>
-      <div>
-        <h4 class="font-semibold text-lg mb-4">Navegação</h4>
-        <ul class="space-y-2 text-gray-300 text-sm">
-          <li><a href="#" class="hover:text-white">Início</a></li>
-          <li><a href="#" class="hover:text-white">Categorias</a></li>
-          <li><a href="#" class="hover:text-white">Contato</a></li>
-          <li><a href="#" class="hover:text-white">Termos de serviço</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4 class="font-semibold text-lg mb-4">Siga-nos</h4>
-        <div class="flex space-x-4 text-2xl">
-          <a href="#" class="hover:text-yellow-400">📘</a>
-          <a href="#" class="hover:text-yellow-400">🐦</a>
-          <a href="#" class="hover:text-yellow-400">📷</a>
+  <section id="novidades" class="section">
+    <div class="container">
+      <h2 class="section-title">Novidades</h2>
+      <div class="books-scroll">
+        <div class="book-card">
+          <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=600&fit=crop" alt="Livro 6" class="book-image">
+          <div class="book-info">
+            <h4 class="book-title">A Arte da Guerra</h4>
+            <p class="book-author">Sun Tzu</p>
+          </div>
+        </div>
+        <div class="book-card">
+          <img src="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=400&h=600&fit=crop" alt="Livro 7" class="book-image">
+          <div class="book-info">
+            <h4 class="book-title">O Hobbit</h4>
+            <p class="book-author">J.R.R. Tolkien</p>
+          </div>
+        </div>
+        <div class="book-card">
+          <img src="https://images.unsplash.com/photo-1519682337058-a94d519337bc?w=400&h=600&fit=crop" alt="Livro 8" class="book-image">
+          <div class="book-info">
+            <h4 class="book-title">Senhor dos Anéis</h4>
+            <p class="book-author">J.R.R. Tolkien</p>
+          </div>
+        </div>
+        <div class="book-card">
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop" alt="Livro 9" class="book-image">
+          <div class="book-info">
+            <h4 class="book-title">Frankenstein</h4>
+            <p class="book-author">Mary Shelley</p>
+          </div>
+        </div>
+        <div class="book-card">
+          <img src="https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400&h=600&fit=crop" alt="Livro 10" class="book-image">
+          <div class="book-info">
+            <h4 class="book-title">Moby Dick</h4>
+            <p class="book-author">Herman Melville</p>
+          </div>
         </div>
       </div>
     </div>
-    <div class="text-center text-gray-400 text-sm mt-8 border-t border-gray-700 pt-4">
-      © 2025 Livraria do Ke. Todos os direitos reservados.
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <div class="footer-column">
+        <h3 class="footer-title">Sobre Nós</h3>
+        <p class="footer-text">A Livraria do Ke é sua fonte confiável para descobrir os melhores livros. Com milhares de títulos disponíveis, ajudamos você a encontrar sua próxima grande leitura.</p>
+      </div>
+      <div class="footer-column">
+        <h3 class="footer-title">Links Rápidos</h3>
+        <ul class="footer-links">
+          <li><a href="#inicio">Início</a></li>
+          <li><a href="#populares">Populares</a></li>
+          <li><a href="#categorias">Categorias</a></li>
+          <li><a href="#novidades">Novidades</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h3 class="footer-title">Redes Sociais</h3>
+        <div class="social-links">
+          <a href="#" class="social-icon" aria-label="Facebook">📘</a>
+          <a href="#" class="social-icon" aria-label="Instagram">📷</a>
+          <a href="#" class="social-icon" aria-label="Twitter">🐦</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Livraria do Ke. Todos os direitos reservados.</p>
     </div>
   </footer>
-
-  <script src="js/script.js"></script>
 </body>
 </html>
