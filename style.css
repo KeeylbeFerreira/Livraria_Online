@@ -1,0 +1,36 @@
+body {
+  font-family: 'Poppins', sans-serif;
+}
+
+.hero-section {
+  background-image: url('https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=1350&q=80');
+}
+
+/* Efeito nas categorias */
+.categoria {
+  border: 1px solid #e5e7eb;
+  text-align: center;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.categoria:hover {
+  background-color: #eef2ff;
+  transform: scale(1.05);
+}
+
+/* Barra de rolagem personalizada */
+::-webkit-scrollbar {
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #c7d2fe;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #818cf8;
+}
