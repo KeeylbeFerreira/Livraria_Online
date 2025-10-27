@@ -42,7 +42,7 @@ body {
 }
 
 .logo-img {
-  height: 50px;
+  height: 100px;
   width: auto;
   display: block;
   transition: var(--transition);
@@ -167,6 +167,51 @@ body {
   color: white;
   transform: translateY(-5px);
 }
+
+/* =========================
+   SEÇÃO SOBRE
+========================= */
+.sobre-section {
+  padding: 4rem 1rem;
+  background-color: var(--background);
+  color: var(--text);
+  text-align: center;
+}
+
+.sobre-container {
+  max-width: 900px;
+  margin: auto;
+  line-height: 1.8;
+}
+
+.sobre-container h1 {
+  font-size: 2.2rem;
+  color: var(--primary);
+  margin-bottom: 1.5rem;
+}
+
+.sobre-container p {
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+}
+
+.sobre-imagem {
+  margin-top: 2rem;
+}
+
+.sobre-imagem img {
+  width: 100%;
+  max-width: 700px;
+  border-radius: 1rem;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* Link ativo no menu */
+.nav a.active {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
 
 /* =========================
    RODAPÉ
