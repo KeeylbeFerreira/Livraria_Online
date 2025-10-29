@@ -169,47 +169,54 @@ body {
 }
 
 /* =========================
-   SEÇÃO SOBRE
+   PÁGINA SOBRE
 ========================= */
 .sobre-section {
-  padding: 4rem 1rem;
+  padding: 4rem 0;
   background-color: var(--background);
-  color: var(--text);
-  text-align: center;
 }
 
 .sobre-container {
-  max-width: 900px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 3rem;
+  width: 90%;
+  max-width: 1100px;
   margin: auto;
-  line-height: 1.8;
 }
 
-.sobre-container h1 {
-  font-size: 2.2rem;
+.sobre-texto {
+  flex: 1 1 400px;
+  text-align: left;
+}
+
+.sobre-texto h1 {
   color: var(--primary);
+  font-size: 2.2rem;
   margin-bottom: 1.5rem;
 }
 
-.sobre-container p {
+.sobre-texto p {
   font-size: 1.1rem;
-  margin-bottom: 1.5rem;
+  line-height: 1.7;
+  margin-bottom: 1rem;
 }
 
 .sobre-imagem {
-  margin-top: 2rem;
+  flex: 1 1 350px;
+  text-align: center;
 }
 
-.sobre-imagem img {
-  width: 100%;
-  max-width: 700px;
-  border-radius: 1rem;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+.gif-livro {
+  max-width: 300px;
+  border-radius: 12px;
+  transition: var(--transition);
 }
 
-/* Link ativo no menu */
-.nav a.active {
-  color: var(--accent);
-  text-decoration: underline;
+.gif-livro:hover {
+  transform: scale(1.05);
 }
 
 
