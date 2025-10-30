@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Catálogo — Livraria do Ke</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- reutiliza header -->
+  <header class="site-header">
+    <div class="container header-row">
+      <a href="Pag01.html" class="logo-link"><img src="logo-livraria.png" alt="Logo" class="logo-img"><span class="logo-text"> Livraria do Ke</span></a>
+      <nav class="nav"><ul><li><a href="Pag01.html">Início</a></li><li><a href="catalogo.html">Catálogo</a></li><li><a href="sobre.html">Sobre</a></li></ul></nav>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="container">
+      <h1 class="page-title">Explore nossa coleção</h1>
+
+      <div class="catalog-top">
+        <form id="catalog-search" role="search" aria-label="Buscar no catálogo">
+          <label for="catalog-q" class="visually-hidden">Buscar</label>
+          <input id="catalog-q" placeholder="Busque por título, autor ou gênero…" />
+          <button class="btn-pill">Buscar</button>
+        </form>
+
+        <div class="filters" aria-hidden="false">
+          <label class="filter-label">Gênero
+            <select id="fGenero" aria-label="Filtrar por gênero">
+              <option value="">Todos</option>
+              <option>Fantasia</option><option>Romance</option><option>Ficção Científica</option><option>Mistério</option>
+            </select>
+          </label>
+
+          <label class="filter-label">Autor
+            <select id="fAutor" aria-label="Filtrar por autor">
+              <option value="">Todos</option>
+              <option>Autor A</option><option>Autor B</option><option>Autor C</option>
+            </select>
+          </label>
+        </div>
+      </div>
+
+      <section id="catalog-grid" class="grid catalog-grid" aria-live="polite" aria-label="Resultados do catálogo">
+        <!-- cards gerados por JS -->
+      </section>
+
+      <nav class="pagination" role="navigation" aria-label="Paginação" id="pagination"></nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="ft-about">
+        <img src="logo-livraria.png" alt="Logo" class="logo-img small">
+        <p>Livraria do Ke — Curadoria e boas leituras.</p>
+      </div>
+      <div class="ft-links">
+        <h4>Links Rápidos</h4>
+        <ul><li><a href="Pag01.html">Início</a></li><li><a href="catalogo.html">Catálogo</a></li></ul>
+      </div>
+      <div class="ft-socials">
+        <h4>Redes</h4>
+        <div class="socials"><a href="#">Facebook</a><a href="#">Twitter</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
