@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Leitura — Livraria do Ke</title>
+    <meta name="description" content="Ambiente de leitura com controle de fonte, espaçamento, largura, temas, favoritos e notas.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+
+<header class="header">
+  <nav class="nav container" aria-label="Principal">
+    <a class="brand" href="Pag01.html">
+      <img src="assets/img/logo-livraria.png" alt="Logo Livraria do Ke">
+      <span>Livraria do Ke</span>
+    </a>
+    <button class="burger" aria-label="Abrir menu">☰</button>
+    <div class="nav-links">
+      <a href="Pag01.html">Início</a>
+      <a href="Catalogo.html">Catálogo</a>
+      <a href="sobre.html">Sobre</a>
+      <a href="index.html">Entrar</a>
+    </div>
+    <div class="nav-cta">
+      <a class="btn btn-outline" href="Catalogo.html">Voltar ao Catálogo</a>
+    </div>
+  </nav>
+</header>
+
+<main class="section">
+  <div class="container">
+    <div class="reader-shell theme-light" id="reader-app">
+      <div class="reader-top">
+        <div class="reader-meta">
+          <strong id="reading-title">Leitura</strong> · <span id="reading-meta">—</span>
+        </div>
+        <div class="reader-actions">
+          <button class="btn" id="add-bm" title="Adicionar favorito (B)">⭐ Favoritar</button>
+          <button class="btn" id="add-note" title="Salvar seleção como nota (N)">📝 Nota</button>
+          <button class="btn" id="tts-play" title="Ler em voz alta">▶️</button>
+          <button class="btn" id="tts-pause" title="Pausar leitura">⏸️</button>
+          <button class="btn" id="tts-stop" title="Parar leitura">⏹️</button>
+        </div>
+      </div>
+
+      <div class="reader-top">
+        <div class="reader-controls">
+          <div class="ctrl">
+            Tema
+            <select id="theme">
+              <option value="light">Claro</option>
+              <option value="dark">Escuro</option>
+              <option value="sepia">Sépia</option>
+              <option value="night">Noite</option>
+            </select>
+          </div>
+          <div class="ctrl">
+            Fonte
+            <select id="font">
+              <option value="serif">Serifada</option>
+              <option value="sans">Sem serifa</option>
+            </select>
+          </div>
+          <div class="ctrl">Tamanho <input id="size" type="range" min="0.8" max="1.8" step="0.05" value="1.05"></div>
+          <div class="ctrl">Altura-linha <input id="lh" type="range" min="1.2" max="2.2" step="0.05" value="1.8"></div>
+          <div class="ctrl">Largura <input id="width" type="range" min="50" max="90" step="2" value="70"></div>
+          <div class="ctrl"><label><input id="easy" type="checkbox"> Leitura facilitada</label></div>
+        </div>
+        <div class="reader-controls">
+          <div class="ctrl">Abrir arquivo <input id="file" type="file" accept=".txt,.md,.html"></div>
+        </div>
+      </div>
+
+      <div class="reader-body">
+        <aside class="reader-side">
+          <strong>Sumário</strong>
+          <nav id="toc" class="toc" aria-label="Sumário"></nav>
+
+          <strong style="margin-top:1rem; display:block">Favoritos</strong>
+          <div id="bookmarks" class="bookmarks"></div>
+
+          <strong style="margin-top:1rem; display:block">Notas</strong>
+          <div id="notes" class="notes"></div>
+        </aside>
+
+        <section class="reader-main" id="reader">
+          <article id="content" class="content">
+            <!-- conteúdo é injetado via JS -->
+          </article>
+        </section>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  const p = new URLSearchParams(location.search);
+  const t = p.get('book') ? decodeURIComponent(p.get('book')) : 'Leitura';
+  document.getElementById('reading-title').textContent = t;
+</script>
+
+<footer class="footer">
+  <div class="container cols">
+    <div>
+      <a class="brand" href="Pag01.html">
+        <img src="assets/img/logo-livraria.png" alt="Logo Livraria do Ke">
+        <span>Livraria do Ke</span>
+      </a>
+      <p>Leitura que inspira. Atendimento humanizado e entrega para todo o Brasil.</p>
+      <small>© 2025 Livraria do Ke. Todos os direitos reservados.</small>
+    </div>
+    <div>
+      <strong>Links</strong><br>
+      <a href="Catalogo.html">Catálogo</a><br>
+      <a href="sobre.html">Sobre</a><br>
+      <a href="index.html" aria-current="page">Entrar</a>
+    </div>
+    <div>
+      <strong>Contato</strong><br>
+      <a href="mailto:contato@livrariadoke.com">contato@livrariadoke.com</a><br>
+      <a href="tel:+550000000000">(00) 00000-0000</a>
+    </div>
+  </div>
+</footer>
+<div class="toast" role="status" aria-live="polite"></div>
+<script src="java.js" defer></script>
+</body>
+</html>

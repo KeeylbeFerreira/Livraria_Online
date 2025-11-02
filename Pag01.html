@@ -4,134 +4,122 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Livraria do Ke — Início</title>
-    <meta name="description" content="Descubra seu próximo livro favorito. Catálogo curado de ficção, negócios, tecnologia e mais.">
-    <meta property="og:title" content="Livraria do Ke">
-    <meta property="og:description" content="Uma seleção especial para quem ama ler.">
-    <meta property="og:type" content="website">
+    <meta name="description" content="Descubra seu próximo livro favorito.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
-    <header class="header">
-      <nav class="nav container" aria-label="Principal">
-        <a class="brand" href="Pag01.html">
-          <img src="assets/img/logo-livraria.png" alt="Logo Livraria do Ke">
-          <span>Livraria do Ke</span>
-        </a>
-        <button class="burger" aria-label="Abrir menu">☰</button>
-        <div class="nav-links">
-          <a href="Pag01.html" aria-current="page">Início</a>
-          <a href="Catalogo.html">Catálogo</a>
-          <a href="sobre.html">Sobre</a>
-          <a href="Login.html">Entrar</a>
-        </div>
-        <div class="nav-cta">
-          <a class="btn btn-outline" href="Catalogo.html">Explorar</a>
-          <a class="btn btn-primary" href="Login.html">Entrar</a>
-        </div>
-      </nav>
-    </header>
 
-    <section class="hero">
-      <div class="container content">
-        <div>
-          <h1>Descubra seu <span style="color:#ffd36a">próximo livro favorito</span>.</h1>
-          <p>Uma curadoria com os títulos mais pedidos de ficção, negócios, tecnologia e muito mais.</p>
-          <form action="Catalogo.html" class="searchbar" role="search" aria-label="Buscar no catálogo">
-            <input id="q" name="q" type="search" placeholder="Busque por título ou autor…" aria-label="Buscar por título ou autor">
-            <button class="btn btn-primary" type="submit">Buscar</button>
-          </form>
-          <div style="margin-top:1rem; color:#dbe6f4">Dica: use o filtro por categorias dentro do Catálogo.</div>
-        </div>
-        <div>
-          <img src="assets/img/Gif-Livro.gif" alt="Animação de livros em movimento">
-        </div>
-      </div>
-    </section>
+<header class="header">
+  <nav class="nav container" aria-label="Principal">
+    <a class="brand" href="Pag01.html">
+      <img src="assets/img/logo-livraria.png" alt="Logo Livraria do Ke">
+      <span>Livraria do Ke</span>
+    </a>
+    <button class="burger" aria-label="Abrir menu">☰</button>
+    <div class="nav-links">
+      <a href="Pag01.html" aria-current="page">Início</a>
+      <a href="Catalogo.html">Catálogo</a>
+      <a href="sobre.html">Sobre</a>
+      <a href="index.html">Entrar</a>
+    </div>
+    <div class="nav-cta">
+      <a class="btn btn-outline" href="Catalogo.html">Explorar</a>
+    </div>
+  </nav>
+</header>
 
-    <section class="section">
-      <div class="container">
-        <h2>Destaques da Semana</h2>
-        <div class="grid cols-4">
-          <article class="card">
-            <div class="card-media"><img src="https://picsum.photos/seed/ke1/400/540" alt="Capa do livro em destaque"></div>
-            <div class="card-body">
-              <div class="card-title">A Biblioteca Invisível</div>
-              <div class="card-sub">C. Pereira • <span class="rating">★ 4.7</span></div>
-              <div class="price">R$ 49,90</div>
-              <div class="card-actions">
-                <a class="btn btn-primary" href="Catalogo.html">Ver no catálogo</a>
-                <button class="btn btn-outline" type="button">Favoritar</button>
-              </div>
-            </div>
-          </article>
-          <article class="card">
-            <div class="card-media"><img src="https://picsum.photos/seed/ke2/400/540" alt="Capa do livro em destaque"></div>
-            <div class="card-body">
-              <div class="card-title">O Método da Leitura</div>
-              <div class="card-sub">A. Souza • <span class="rating">★ 4.6</span></div>
-              <div class="price">R$ 39,90</div>
-              <div class="card-actions">
-                <a class="btn btn-primary" href="Catalogo.html">Ver no catálogo</a>
-                <button class="btn btn-outline" type="button">Favoritar</button>
-              </div>
-            </div>
-          </article>
-          <article class="card">
-            <div class="card-media"><img src="https://picsum.photos/seed/ke3/400/540" alt="Capa do livro em destaque"></div>
-            <div class="card-body">
-              <div class="card-title">Negócios sem Mistério</div>
-              <div class="card-sub">B. Lima • <span class="rating">★ 4.5</span></div>
-              <div class="price">R$ 59,90</div>
-              <div class="card-actions">
-                <a class="btn btn-primary" href="Catalogo.html">Ver no catálogo</a>
-                <button class="btn btn-outline" type="button">Favoritar</button>
-              </div>
-            </div>
-          </article>
-          <article class="card">
-            <div class="card-media"><img src="https://picsum.photos/seed/ke4/400/540" alt="Capa do livro em destaque"></div>
-            <div class="card-body">
-              <div class="card-title">Algoritmos Ilustrados</div>
-              <div class="card-sub">D. Santos • <span class="rating">★ 4.8</span></div>
-              <div class="price">R$ 69,90</div>
-              <div class="card-actions">
-                <a class="btn btn-primary" href="Catalogo.html">Ver no catálogo</a>
-                <button class="btn btn-outline" type="button">Favoritar</button>
-              </div>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
+<section class="hero">
+  <div class="container content">
+    <div>
+      <h1>Descubra seu <span style="color:#ffd36a">próximo livro favorito</span>.</h1>
+      <p>Uma curadoria com os títulos mais pedidos de ficção, negócios, tecnologia e muito mais.</p>
+      <form action="Catalogo.html" class="searchbar" role="search" aria-label="Buscar no catálogo">
+        <input id="q" name="q" type="search" placeholder="Busque por título ou autor…" aria-label="Buscar por título ou autor">
+        <button class="btn btn-primary" type="submit">Buscar</button>
+      </form>
+      <div style="margin-top:1rem; color:#dbe6f4">Dica: use o filtro por categorias dentro do Catálogo.</div>
+    </div>
+    <div>
+      <img src="assets/img/Gif-Livro.gif" alt="Animação de livros em movimento">
+    </div>
+  </div>
+</section>
 
-    <footer class="footer">
-      <div class="container cols">
-        <div>
-          <a class="brand" href="Pag01.html">
-            <img src="assets/img/logo-livraria.png" alt="Logo Livraria do Ke">
-            <span>Livraria do Ke</span>
-          </a>
-          <p>Leitura que inspira. Atendimento humanizado e entrega para todo o Brasil.</p>
-          <small>© 2025 Livraria do Ke. Todos os direitos reservados.</small>
+<section class="section">
+  <div class="container">
+    <h2>Destaques da Semana</h2>
+    <div class="grid cols-4">
+      <article class="card">
+        <div class="card-media"><img src="https://picsum.photos/seed/ke1/400/540" alt="Capa do livro em destaque"></div>
+        <div class="card-body">
+          <div class="card-title">A Biblioteca Invisível</div>
+          <div class="card-sub">C. Pereira • <span class="rating">★ 4.7</span></div>
+          <div class="card-actions">
+            <a class="btn btn-primary" href="Catalogo.html">Ver no catálogo</a>
+          </div>
         </div>
-        <div>
-          <strong>Links</strong><br>
-          <a href="Catalogo.html">Catálogo</a><br>
-          <a href="sobre.html">Sobre</a><br>
-          <a href="Login.html">Entrar</a>
+      </article>
+      <article class="card">
+        <div class="card-media"><img src="https://picsum.photos/seed/ke2/400/540" alt="Capa do livro em destaque"></div>
+        <div class="card-body">
+          <div class="card-title">O Método da Leitura</div>
+          <div class="card-sub">A. Souza • <span class="rating">★ 4.6</span></div>
+          <div class="card-actions">
+            <a class="btn btn-primary" href="Catalogo.html">Ver no catálogo</a>
+          </div>
         </div>
-        <div>
-          <strong>Contato</strong><br>
-          <a href="mailto:contato@livrariadoke.com">contato@livrariadoke.com</a><br>
-          <a href="tel:+550000000000">(00) 00000-0000</a>
+      </article>
+      <article class="card">
+        <div class="card-media"><img src="https://picsum.photos/seed/ke3/400/540" alt="Capa do livro em destaque"></div>
+        <div class="card-body">
+          <div class="card-title">Negócios sem Mistério</div>
+          <div class="card-sub">B. Lima • <span class="rating">★ 4.5</span></div>
+          <div class="card-actions">
+            <a class="btn btn-primary" href="Catalogo.html">Ver no catálogo</a>
+          </div>
         </div>
-      </div>
-    </footer>
+      </article>
+      <article class="card">
+        <div class="card-media"><img src="https://picsum.photos/seed/ke4/400/540" alt="Capa do livro em destaque"></div>
+        <div class="card-body">
+          <div class="card-title">Algoritmos Ilustrados</div>
+          <div class="card-sub">D. Santos • <span class="rating">★ 4.8</span></div>
+          <div class="card-actions">
+            <a class="btn btn-primary" href="Catalogo.html">Ver no catálogo</a>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
 
-    <div class="toast" role="status" aria-live="polite"></div>
-    <script src="java.js" defer></script>
-  </body>
+<footer class="footer">
+  <div class="container cols">
+    <div>
+      <a class="brand" href="Pag01.html">
+        <img src="assets/img/logo-livraria.png" alt="Logo Livraria do Ke">
+        <span>Livraria do Ke</span>
+      </a>
+      <p>Leitura que inspira. Atendimento humanizado e entrega para todo o Brasil.</p>
+      <small>© 2025 Livraria do Ke. Todos os direitos reservados.</small>
+    </div>
+    <div>
+      <strong>Links</strong><br>
+      <a href="Catalogo.html">Catálogo</a><br>
+      <a href="sobre.html">Sobre</a><br>
+      <a href="index.html" aria-current="page">Entrar</a>
+    </div>
+    <div>
+      <strong>Contato</strong><br>
+      <a href="mailto:contato@livrariadoke.com">contato@livrariadoke.com</a><br>
+      <a href="tel:+550000000000">(00) 00000-0000</a>
+    </div>
+  </div>
+</footer>
+<div class="toast" role="status" aria-live="polite"></div>
+<script src="java.js" defer></script>
+</body>
 </html>

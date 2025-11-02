@@ -1,3 +1,4 @@
+
 :root{
   --navy:#0D2A4A;
   --navy-700:#0a2039;
@@ -169,3 +170,62 @@ a{color:inherit; text-decoration:none}
   transition:.25s ease; z-index:9999; max-width: 92vw
 }
 .toast.show{opacity:1; transform: translateY(0)}
+
+/* Reader */
+.reader-shell{
+  --reader-bg: #fff;
+  --reader-ink: #111827;
+  --reader-muted:#4b5563;
+  --reader-accent: var(--gold);
+  --reader-max: 70ch;
+  background: var(--reader-bg); color: var(--reader-ink);
+  border:1px solid #e6e8ef; border-radius:1rem; box-shadow:0 10px 26px rgba(13,42,74,.08);
+  overflow:hidden;
+}
+.reader-top{
+  display:flex; flex-wrap:wrap; gap:.75rem; align-items:center; justify-content:space-between;
+  padding: .75rem; background: linear-gradient(0deg, rgba(13,42,74,.04), rgba(13,42,74,.04));
+  border-bottom:1px solid #e6e8ef;
+}
+.reader-controls{display:flex; align-items:center; gap:.5rem; flex-wrap:wrap}
+.reader-controls .ctrl{
+  display:inline-flex; align-items:center; gap:.4rem; background:#fff; border:1px solid #e6e8ef; padding:.45rem .6rem; border-radius:.6rem
+}
+.reader-body{display:grid; grid-template-columns: 280px 1fr; min-height: 65vh}
+.reader-side{border-right:1px solid #e6e8ef; padding:1rem; background:#fafbfe}
+.reader-main{padding:1rem 1.25rem; overflow:auto}
+.reader-main .content{
+  margin-inline:auto; max-width:var(--reader-max); font-size: var(--fs, 1.05rem); line-height: var(--lh, 1.8);
+}
+.reader-main .content h2{font-family:'Merriweather', serif; color:var(--navy); margin-top:1.5rem}
+.reader-main .content p{margin:.75rem 0}
+.reader-main .content blockquote{
+  border-left:4px solid var(--reader-accent); margin:1rem 0; padding:.5rem 1rem; color:var(--reader-muted); background:#fff; border-radius:.4rem
+}
+.reader-meta{color:var(--reader-muted); font-size:.95rem}
+
+.toc{display:flex; flex-direction:column; gap:.25rem}
+.toc a{padding:.35rem .5rem; border-radius:.5rem; color:var(--ink)}
+.toc a:hover, .toc a.active{background:#fff; border:1px solid #e6e8ef}
+
+.bookmarks, .notes{margin-top:1rem; display:flex; flex-direction:column; gap:.35rem}
+.bookmark, .note{background:#fff; border:1px solid #e6e8ef; border-radius:.6rem; padding:.5rem .6rem}
+.note small{display:block; color:var(--reader-muted)}
+
+.reader-actions{display:flex; align-items:center; gap:.5rem}
+.reader-actions .btn{padding:.45rem .65rem; border-radius:.6rem}
+
+.reader-shell.theme-dark{--reader-bg:#0f172a; --reader-ink:#e5e7eb; --reader-muted:#aab1c4}
+.reader-shell.theme-dark .reader-side{background:#0b1427; border-color:#263150}
+.reader-shell.theme-dark .reader-top{background:#0b1427}
+.reader-shell.theme-dark .reader-controls .ctrl{background:#0f172a; color:#e5e7eb; border-color:#263150}
+.reader-shell.theme-dark .toc a{color:#e5e7eb}
+.reader-shell.theme-dark .bookmark, .reader-shell.theme-dark .note{background:#0f172a; border-color:#263150}
+
+.reader-shell.theme-sepia{--reader-bg:#fbf1e1; --reader-ink:#3e2f1c; --reader-muted:#6e5c48}
+.reader-shell.theme-night{--reader-bg:#111111; --reader-ink:#f5f5f5; --reader-muted:#aaaaaa}
+
+.easy{letter-spacing:.02em; word-spacing:.08em}
+
+kbd{background:#11182710; border:1px solid #e6e8ef; padding:.15rem .35rem; border-radius:.35rem; font-size:.9em}
+@media (max-width: 980px){ .reader-body{grid-template-columns: 1fr} .reader-side{order:2} }

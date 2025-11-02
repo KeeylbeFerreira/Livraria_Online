@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Sobre — Livraria do Ke</title>
-    <meta name="description" content="Conheça a história e a missão da Livraria do Ke.">
+    <title>Entrar — Livraria do Ke</title>
+    <meta name="description" content="Faça login para acessar sua conta.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -22,29 +22,40 @@
     <div class="nav-links">
       <a href="Pag01.html">Início</a>
       <a href="Catalogo.html">Catálogo</a>
-      <a href="sobre.html" aria-current="page">Sobre</a>
-      <a href="index.html">Entrar</a>
+      <a href="sobre.html">Sobre</a>
+      <a href="index.html" aria-current="page">Entrar</a>
     </div>
     <div class="nav-cta">
-      <a class="btn btn-outline" href="Catalogo.html">Explorar</a>
+      
     </div>
   </nav>
 </header>
 
 <main class="section">
-  <div class="container about">
-    <div>
-      <h2>Nossa história</h2>
-      <p>A Livraria do Ke nasceu do desejo de aproximar pessoas e histórias. Acreditamos que a leitura transforma realidades e amplia horizontes.</p>
-      <p>Hoje oferecemos uma curadoria cuidadosa que equilibra clássicos, tendências e títulos nacionais, sempre com atendimento humanizado.</p>
-      <p><strong>Missão:</strong> tornar a experiência de descobrir livros tão prazerosa quanto lê-los.</p>
-      <a class="btn btn-primary" href="Catalogo.html">Explorar Catálogo</a>
-    </div>
-    <div>
-      <img src="assets/img/Gif-Livro.gif" alt="Animação temática de leitura">
-    </div>
+  <div class="container">
+    <h2>Bem-vindo de volta</h2>
+    <form id="login-form" class="form" novalidate>
+      <div class="input">
+        <label for="email">E-mail</label>
+        <input id="email" name="email" type="email" placeholder="seuemail@exemplo.com" required>
+      </div>
+      <div class="input">
+        <label for="password">Senha</label>
+        <div style="display:flex; gap:.5rem">
+          <input id="password" name="password" type="password" placeholder="••••••••" required style="flex:1">
+          <button type="button" class="btn" data-toggle="password" data-target="password" aria-pressed="false">👁</button>
+        </div>
+        <div class="form-hint">Dica: use pelo menos 8 caracteres.</div>
+      </div>
+      <button class="btn btn-primary" type="submit">Entrar</button>
+    </form>
   </div>
 </main>
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const email = document.getElementById('email'); if (email) email.focus();
+  });
+</script>
 
 <footer class="footer">
   <div class="container cols">
