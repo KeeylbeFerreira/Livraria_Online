@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Catálogo — Livraria do Ke</title>
+    <meta name="description" content="Explore livros por categorias: ficção, fantasia, romance, negócios, tecnologia e mais.">
+    <meta property="og:title" content="Catálogo — Livraria do Ke">
+    <meta property="og:description" content="Encontre livros por título, autor e categoria.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <header class="header">
+      <nav class="nav container" aria-label="Principal">
+        <a class="brand" href="Pag01.html">
+          <img src="assets/img/logo-livraria.png" alt="Logo Livraria do Ke">
+          <span>Livraria do Ke</span>
+        </a>
+        <button class="burger" aria-label="Abrir menu">☰</button>
+        <div class="nav-links">
+          <a href="Pag01.html">Início</a>
+          <a href="Catalogo.html" aria-current="page">Catálogo</a>
+          <a href="sobre.html">Sobre</a>
+          <a href="Login.html">Entrar</a>
+        </div>
+        <div class="nav-cta">
+          <a class="btn btn-outline" href="Pag01.html">Início</a>
+          <a class="btn btn-primary" href="Login.html">Entrar</a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="section">
+      <div class="container" style="display:grid; gap:1rem">
+        <h1 class="sr-only" style="position:absolute;left:-9999px">Catálogo</h1>
+        <form class="searchbar" role="search" aria-label="Buscar no catálogo" onsubmit="event.preventDefault()">
+          <input id="q" type="search" placeholder="Busque por título ou autor…" aria-label="Buscar por título ou autor">
+          <button class="btn btn-primary" type="button">Buscar</button>
+        </form>
+
+        <div class="chips" aria-label="Categorias">
+          <button class="chip active" data-cat="Todos" type="button">Todos</button>
+          <button class="chip" data-cat="Ficção" type="button">Ficção</button>
+          <button class="chip" data-cat="Fantasia" type="button">Fantasia</button>
+          <button class="chip" data-cat="Romance" type="button">Romance</button>
+          <button class="chip" data-cat="Negócios" type="button">Negócios</button>
+          <button class="chip" data-cat="Tecnologia" type="button">Tecnologia</button>
+          <button class="chip" data-cat="Ciência" type="button">Ciência</button>
+        </div>
+
+        <section id="catalog-grid" class="grid cols-3" aria-live="polite"></section>
+        <nav id="pagination" class="pagination" aria-label="Paginação"></nav>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container cols">
+        <div>
+          <a class="brand" href="Pag01.html">
+            <img src="assets/img/logo-livraria.png" alt="Logo Livraria do Ke">
+            <span>Livraria do Ke</span>
+          </a>
+          <p>Leitura que inspira. Atendimento humanizado e entrega para todo o Brasil.</p>
+          <small>© 2025 Livraria do Ke. Todos os direitos reservados.</small>
+        </div>
+        <div>
+          <strong>Links</strong><br>
+          <a href="Catalogo.html" aria-current="page">Catálogo</a><br>
+          <a href="sobre.html">Sobre</a><br>
+          <a href="Login.html">Entrar</a>
+        </div>
+        <div>
+          <strong>Contato</strong><br>
+          <a href="mailto:contato@livrariadoke.com">contato@livrariadoke.com</a><br>
+          <a href="tel:+550000000000">(00) 00000-0000</a>
+        </div>
+      </div>
+    </footer>
+
+    <div class="toast" role="status" aria-live="polite"></div>
+    <script src="java.js" defer></script>
+  </body>
+</html>
