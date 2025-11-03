@@ -18,20 +18,22 @@
       <img src="assets/img/logo-livraria.png" alt="Logo Livraria do Ke">
       <span>Livraria do Ke</span>
     </a>
-    <button class="burger" aria-label="Abrir menu">☰</button>
+    <button class="burger" id="burger" aria-label="Abrir menu">☰</button>
     <div class="nav-links">
       <a href="Pag01.html">Início</a>
       <a href="Catalogo.html">Catálogo</a>
       <a href="sobre.html" aria-current="page">Sobre</a>
-      <a href="index.html">Entrar</a>
+      <a href="index.html" id="link-entrar">Entrar</a><!-- oculto se logado -->
     </div>
-    <div class="nav-cta">
+    <!-- área do usuário -->
+    <div class="nav-cta" id="user-area">
       <a class="btn btn-outline" href="Catalogo.html">Explorar</a>
     </div>
   </nav>
 </header>
 
 <main class="section">
+  <!-- Hero/About -->
   <div class="container about">
     <div>
       <h2>Nossa história</h2>
@@ -43,6 +45,73 @@
     <div>
       <img src="assets/img/Gif-Livro.gif" alt="Animação temática de leitura">
     </div>
+  </div>
+
+  <!-- Valores -->
+  <div class="container section">
+    <h2>Nossos valores</h2>
+    <div class="grid cols-3">
+      <article class="card">
+        <div class="card-body">
+          <div class="card-title">Acessibilidade</div>
+          <p class="card-sub">Leitura gratuita de obras em domínio público e ambiente confortável para todos os dispositivos.</p>
+        </div>
+      </article>
+      <article class="card">
+        <div class="card-body">
+          <div class="card-title">Curadoria</div>
+          <p class="card-sub">Seleção atenta de títulos para incentivar o hábito da leitura e a diversidade de temas.</p>
+        </div>
+      </article>
+      <article class="card">
+        <div class="card-body">
+          <div class="card-title">Comunidade</div>
+          <p class="card-sub">Conteúdos pensados para aproximar leitores e promover recomendações honestas.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <!-- Como funciona -->
+  <div class="container section">
+    <h2>Como funciona</h2>
+    <div class="grid cols-3">
+      <article class="card">
+        <div class="card-body">
+          <div class="card-title">1) Explore</div>
+          <p class="card-sub">Use busca e filtros do catálogo para encontrar obras por título, autor ou gênero.</p>
+        </div>
+      </article>
+      <article class="card">
+        <div class="card-body">
+          <div class="card-title">2) Leia</div>
+          <p class="card-sub">Abra o livro no leitor embutido com modos Claro, Escuro e Sépia, além de largura cheia e foco.</p>
+        </div>
+      </article>
+      <article class="card">
+        <div class="card-body">
+          <div class="card-title">3) Compartilhe</div>
+          <p class="card-sub">Indique títulos para amigos e ajude a fortalecer a comunidade leitora.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="container section" style="max-width:840px">
+    <h2>Perguntas frequentes</h2>
+    <details class="card" style="padding:0 1rem">
+      <summary class="card-title" style="padding:1rem 0">Os livros são gratuitos?</summary>
+      <div class="card-sub" style="padding:0 0 1rem 0">Sim, as leituras disponibilizadas aqui são de domínio público ou autorizadas para uso educacional.</div>
+    </details>
+    <details class="card" style="padding:0 1rem; margin-top:.6rem">
+      <summary class="card-title" style="padding:1rem 0">Preciso de conta para ler?</summary>
+      <div class="card-sub" style="padding:0 0 1rem 0">Não. A conta é opcional e servirá para recursos futuros, como favoritos e histórico de leitura.</div>
+    </details>
+    <details class="card" style="padding:0 1rem; margin-top:.6rem">
+      <summary class="card-title" style="padding:1rem 0">Posso baixar o PDF?</summary>
+      <div class="card-sub" style="padding:0 0 1rem 0">Sim, no leitor há um botão “Baixar PDF”.</div>
+    </details>
   </div>
 </main>
 
@@ -59,8 +128,8 @@
     <div>
       <strong>Links</strong><br>
       <a href="Catalogo.html">Catálogo</a><br>
-      <a href="sobre.html">Sobre</a><br>
-      <a href="index.html" aria-current="page">Entrar</a>
+      <a href="sobre.html" aria-current="page">Sobre</a><br>
+      <a href="index.html">Entrar</a>
     </div>
     <div>
       <strong>Contato</strong><br>
@@ -70,6 +139,49 @@
   </div>
 </footer>
 <div class="toast" role="status" aria-live="polite"></div>
-<script src="java.js" defer></script>
+
+<script>
+  /* === Nome do usuário no topo === */
+  const userArea   = document.getElementById('user-area');
+  const linkEntrar = document.getElementById('link-entrar'); // pode não existir nesta página do footer
+  const current    = JSON.parse(localStorage.getItem('ldk_current_user') || 'null');
+
+  if (current && (current.name || current.email)) {
+    // esconde "Entrar" do menu principal
+    const topLogin = document.querySelector('.nav-links #link-entrar');
+    if (topLogin) topLogin.style.display = 'none';
+
+    const firstName = (current.name || current.email).split(' ')[0];
+
+    const hello = document.createElement('span');
+    hello.className = 'chip';
+    hello.textContent = `Olá, ${firstName}`;
+
+    const explorar = document.createElement('a');
+    explorar.className = 'btn';
+    explorar.href = 'Catalogo.html';
+    explorar.textContent = 'Explorar';
+
+    const logout = document.createElement('button');
+    logout.className = 'btn btn-outline';
+    logout.type = 'button';
+    logout.textContent = 'Sair';
+    logout.addEventListener('click', () => {
+      localStorage.removeItem('ldk_current_user');
+      location.reload();
+    });
+
+    if (userArea) {
+      userArea.innerHTML = '';
+      userArea.append(hello, explorar, logout);
+    }
+  }
+
+  // menu mobile
+  const burger = document.getElementById('burger');
+  const links  = document.querySelector('.nav-links');
+  burger?.addEventListener('click', () => links.classList.toggle('show'));
+</script>
+
 </body>
 </html>

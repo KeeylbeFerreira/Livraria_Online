@@ -235,3 +235,16 @@ a{color:inherit; text-decoration:none}
 
 kbd{background:#11182710; border:1px solid #e6e8ef; padding:.15rem .35rem; border-radius:.35rem; font-size:.9em}
 @media (max-width: 980px){ .reader-body{grid-template-columns: 1fr} .reader-side{order:2} }
+/* --- Reader: fundo preto no modo escuro --- */
+.reader-shell.theme-dark .reader-body,
+.reader-shell.theme-dark .reader-main{
+  background:#000;                 /* área externa ao PDF */
+}
+
+.reader-shell.theme-dark .pdf-frame{
+  background:#000;                 /* fundo do iframe (tira o branco) */
+  border-color:#263150;
+  box-shadow:0 10px 26px rgba(0,0,0,.45);
+  color-scheme: dark;              /* alguns viewers respeitam dark scheme */
+}
+

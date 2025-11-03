@@ -20,11 +20,9 @@
     .reader-meta{ color:var(--muted) }
     .reader-actions{ display:flex; gap:.5rem; flex-wrap:wrap }
 
-    /* Modo foco: esconde header/rodapé */
     body.is-focus .header, body.is-focus .footer { display:none }
     body.is-focus .pdf-frame{ height: calc(100vh - 48px) }
 
-    /* Largura cheia */
     .reader-shell.is-wide .reader-body{ max-width:none }
     .reader-shell.is-wide .pdf-frame{ height: 88vh }
   </style>
@@ -42,7 +40,11 @@
       <a href="Pag01.html">Início</a>
       <a href="Catalogo.html">Catálogo</a>
       <a href="sobre.html">Sobre</a>
-      <a href="index.html">Entrar</a>
+      <a href="index.html" id="link-entrar">Entrar</a> <!-- será oculto se logado -->
+    </div>
+    <!-- NOVO: área para nome do usuário / explorar / sair -->
+    <div class="nav-cta" id="user-area">
+      <a class="btn btn-outline" href="Catalogo.html">Explorar</a>
     </div>
   </nav>
 </header>
@@ -50,7 +52,6 @@
 <main class="section">
   <div class="container">
     <div class="reader-shell" id="reader-shell">
-      <!-- Topo -->
       <div class="reader-top">
         <div class="reader-header">
           <a class="btn" href="Catalogo.html">← Voltar</a>
@@ -60,20 +61,16 @@
         <div class="reader-actions">
           <button class="btn" id="focus-toggle" title="Modo foco (F)">Modo foco</button>
           <button class="btn" id="wide-toggle" title="Largura cheia (W)">Largura cheia</button>
-
-          <!-- Temas do leitor -->
           <div class="ctrl" style="display:inline-flex; gap:.25rem">
             <button class="btn" id="theme-light"  title="Claro">Claro</button>
             <button class="btn" id="theme-dark"   title="Escuro">Escuro</button>
             <button class="btn" id="theme-sepia"  title="Sépia">Sépia</button>
           </div>
-
           <a class="btn btn-outline" id="download-link" href="#" download>Baixar PDF</a>
           <a class="btn" id="newtab-link" href="#" target="_blank" rel="noopener">Abrir em nova aba</a>
         </div>
       </div>
 
-      <!-- Corpo -->
       <div class="reader-body" style="grid-template-columns: 1fr; max-width: 1120px; margin: 0 auto;">
         <section class="reader-main">
           <div style="margin-top:.75rem">
@@ -112,18 +109,47 @@
 <script type="module">
   import { BOOKS } from './js/books.js';
 
+  /* === NOME DO USUÁRIO NO TOPO === */
+  const userArea   = document.getElementById('user-area');
+  const linkEntrar = document.getElementById('link-entrar');
+  const current    = JSON.parse(localStorage.getItem('ldk_current_user') || 'null');
+
+  if (current && (current.name || current.email)) {
+    if (linkEntrar) linkEntrar.style.display = 'none';
+    const firstName = (current.name || current.email).split(' ')[0];
+
+    const hello = document.createElement('span');
+    hello.className = 'chip';
+    hello.textContent = `Olá, ${firstName}`;
+
+    const explorar = document.createElement('a');
+    explorar.className = 'btn';
+    explorar.href = 'Catalogo.html';
+    explorar.textContent = 'Explorar';
+
+    const logout = document.createElement('button');
+    logout.className = 'btn btn-outline';
+    logout.type = 'button';
+    logout.textContent = 'Sair';
+    logout.addEventListener('click', () => {
+      localStorage.removeItem('ldk_current_user');
+      location.reload();
+    });
+
+    userArea.innerHTML = '';
+    userArea.append(hello, explorar, logout);
+  }
+  /* === /NOME DO USUÁRIO === */
+
   // util: aceita 'senhora.pdf' OU 'assets/books/senhora.pdf'
   function normalizePath(file) {
-    // se já tem pasta, mantém; se for só o nome, prefixa
     const hasDir = /[\\/]/.test(file);
     const base = hasDir ? file : `assets/books/${file}`;
-    // codifica apenas o último segmento (nome do arquivo) para suportar espaços/acentos
     const parts = base.split('/');
     parts[parts.length - 1] = encodeURIComponent(parts[parts.length - 1]);
     return parts.join('/');
   }
 
-  // navbar mobile
   const burger = document.getElementById('burger');
   const links  = document.querySelector('.nav-links');
   burger?.addEventListener('click', () => links.classList.toggle('show'));
@@ -148,7 +174,6 @@
     metaEl.textContent  = `${book.author}${book.genres ? ' • ' + book.genres.join(' • ') : ''}`;
 
     const path = normalizePath(book.file);
-    // sem toolbar do viewer nativo; FitH ajusta largura
     frame.src = `${path}#toolbar=0&navpanes=0&view=FitH`;
     dlLink.href  = path;
     dlLink.setAttribute('download', `${book.title}.pdf`);
