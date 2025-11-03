@@ -1,16 +1,40 @@
 <!doctype html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Leitura — Livraria do Ke</title>
-    <meta name="description" content="Ambiente de leitura com controle de fonte, espaçamento, largura, temas, favoritos e notas.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-  </head>
-  <body>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Leitura — Livraria do Ke</title>
+  <meta name="description" content="Ambiente de leitura com conforto visual.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ajustes visuais do leitor PDF */
+    .pdf-frame{
+      width:100%;
+      height:82vh;
+      border:1px solid #e6e8ef;
+      border-radius:12px;
+      background:#fff;
+      box-shadow:0 10px 26px rgba(13,42,74,.08);
+    }
+    .reader-header{ display:flex; align-items:center; gap:.75rem; flex-wrap:wrap }
+    .reader-header h2{ margin:0 }
+    .reader-meta{ color:var(--muted) }
+    .reader-actions{ display:flex; gap:.5rem; flex-wrap:wrap }
+
+    /* modo foco: esconde header/rodapé p/ leitura */
+    body.is-focus .header,
+    body.is-focus .footer { display:none }
+    body.is-focus .pdf-frame{ height: calc(100vh - 48px) }
+
+    /* largura cheia do container */
+    .reader-shell.is-wide .reader-body{ max-width:none }
+    .reader-shell.is-wide .pdf-frame{ height: 88vh }
+  </style>
+</head>
+<body>
 
 <header class="header">
   <nav class="nav container" aria-label="Principal">
@@ -25,83 +49,39 @@
       <a href="sobre.html">Sobre</a>
       <a href="index.html">Entrar</a>
     </div>
-    <div class="nav-cta">
-      <a class="btn btn-outline" href="Catalogo.html">Voltar ao Catálogo</a>
-    </div>
   </nav>
 </header>
 
 <main class="section">
   <div class="container">
-    <div class="reader-shell theme-light" id="reader-app">
+    <div class="reader-shell theme-light" id="reader-shell">
+      <!-- Topo do leitor -->
       <div class="reader-top">
-        <div class="reader-meta">
-          <strong id="reading-title">Leitura</strong> · <span id="reading-meta">—</span>
+        <div class="reader-header">
+          <a class="btn" href="Catalogo.html">← Voltar</a>
+          <h2 id="book-title">Carregando…</h2>
+          <span id="book-meta" class="reader-meta">—</span>
         </div>
         <div class="reader-actions">
-          <button class="btn" id="add-bm" title="Adicionar favorito (B)">⭐ Favoritar</button>
-          <button class="btn" id="add-note" title="Salvar seleção como nota (N)">📝 Nota</button>
-          <button class="btn" id="tts-play" title="Ler em voz alta">▶️</button>
-          <button class="btn" id="tts-pause" title="Pausar leitura">⏸️</button>
-          <button class="btn" id="tts-stop" title="Parar leitura">⏹️</button>
+          <button class="btn" id="focus-toggle" title="Modo foco (F)">Modo foco</button>
+          <button class="btn" id="wide-toggle" title="Largura cheia (W)">Largura cheia</button>
+          <a class="btn btn-outline" id="download-link" href="#" download>Baixar PDF</a>
+          <a class="btn" id="newtab-link" href="#" target="_blank" rel="noopener">Abrir em nova aba</a>
         </div>
       </div>
 
-      <div class="reader-top">
-        <div class="reader-controls">
-          <div class="ctrl">
-            Tema
-            <select id="theme">
-              <option value="light">Claro</option>
-              <option value="dark">Escuro</option>
-              <option value="sepia">Sépia</option>
-              <option value="night">Noite</option>
-            </select>
+      <!-- Corpo do leitor -->
+      <div class="reader-body" style="grid-template-columns: 1fr; max-width: 1120px; margin: 0 auto;">
+        <section class="reader-main">
+          <div style="margin-top:.75rem">
+            <!-- PDF sem a barra do visualizador nativo -->
+            <iframe id="pdf" class="pdf-frame" title="Leitor de PDF"></iframe>
           </div>
-          <div class="ctrl">
-            Fonte
-            <select id="font">
-              <option value="serif">Serifada</option>
-              <option value="sans">Sem serifa</option>
-            </select>
-          </div>
-          <div class="ctrl">Tamanho <input id="size" type="range" min="0.8" max="1.8" step="0.05" value="1.05"></div>
-          <div class="ctrl">Altura-linha <input id="lh" type="range" min="1.2" max="2.2" step="0.05" value="1.8"></div>
-          <div class="ctrl">Largura <input id="width" type="range" min="50" max="90" step="2" value="70"></div>
-          <div class="ctrl"><label><input id="easy" type="checkbox"> Leitura facilitada</label></div>
-        </div>
-        <div class="reader-controls">
-          <div class="ctrl">Abrir arquivo <input id="file" type="file" accept=".txt,.md,.html"></div>
-        </div>
-      </div>
-
-      <div class="reader-body">
-        <aside class="reader-side">
-          <strong>Sumário</strong>
-          <nav id="toc" class="toc" aria-label="Sumário"></nav>
-
-          <strong style="margin-top:1rem; display:block">Favoritos</strong>
-          <div id="bookmarks" class="bookmarks"></div>
-
-          <strong style="margin-top:1rem; display:block">Notas</strong>
-          <div id="notes" class="notes"></div>
-        </aside>
-
-        <section class="reader-main" id="reader">
-          <article id="content" class="content">
-            <!-- conteúdo é injetado via JS -->
-          </article>
         </section>
       </div>
     </div>
   </div>
 </main>
-
-<script>
-  const p = new URLSearchParams(location.search);
-  const t = p.get('book') ? decodeURIComponent(p.get('book')) : 'Leitura';
-  document.getElementById('reading-title').textContent = t;
-</script>
 
 <footer class="footer">
   <div class="container cols">
@@ -117,7 +97,7 @@
       <strong>Links</strong><br>
       <a href="Catalogo.html">Catálogo</a><br>
       <a href="sobre.html">Sobre</a><br>
-      <a href="index.html" aria-current="page">Entrar</a>
+      <a href="index.html">Entrar</a>
     </div>
     <div>
       <strong>Contato</strong><br>
@@ -126,7 +106,61 @@
     </div>
   </div>
 </footer>
-<div class="toast" role="status" aria-live="polite"></div>
-<script src="java.js" defer></script>
+
+<script type="module">
+  import { BOOKS } from './js/books.js';
+
+  const params = new URLSearchParams(location.search);
+  const id = params.get('id');
+
+  const titleEl = document.getElementById('book-title');
+  const metaEl  = document.getElementById('book-meta');
+  const frame   = document.getElementById('pdf');
+  const dlLink  = document.getElementById('download-link');
+  const tabLink = document.getElementById('newtab-link');
+  const shell   = document.getElementById('reader-shell');
+
+  const book = BOOKS.find(b => b.id === id);
+
+  if (!book) {
+    titleEl.textContent = 'Livro não encontrado';
+    metaEl.textContent  = 'Verifique o link ou retorne ao catálogo.';
+  } else {
+    titleEl.textContent = book.title;
+    metaEl.textContent  = `${book.author}${book.genres ? ' • ' + book.genres.join(' • ') : ''}`;
+
+    // caminho do PDF (codificando nome para suportar espaços/acentos)
+    const fileName = encodeURIComponent(book.file);
+    const path = `assets/books/${fileName}`;
+
+    // abre no iframe sem toolbar; "FitH" deixa largura ajustada
+    frame.src = `${path}#toolbar=0&navpanes=0&view=FitH`;
+
+    // ações
+    dlLink.href  = path;
+    dlLink.setAttribute('download', `${book.title}.pdf`);
+    tabLink.href = path;
+  }
+
+  // Modo foco (esconde header/footer)
+  const focusBtn = document.getElementById('focus-toggle');
+  focusBtn.addEventListener('click', () => {
+    document.body.classList.toggle('is-focus');
+  });
+  // atalho F
+  document.addEventListener('keydown', (e) => {
+    if (e.key.toLowerCase() === 'f') focusBtn.click();
+  });
+
+  // Largura cheia do leitor
+  const wideBtn = document.getElementById('wide-toggle');
+  wideBtn.addEventListener('click', () => {
+    shell.classList.toggle('is-wide');
+  });
+  // atalho W
+  document.addEventListener('keydown', (e) => {
+    if (e.key.toLowerCase() === 'w') wideBtn.click();
+  });
+</script>
 </body>
 </html>
