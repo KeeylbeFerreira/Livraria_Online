@@ -18,7 +18,7 @@
       <img src="assets/img/logo-livraria.png" alt="Logo Livraria do Ke">
       <span>Livraria do Ke</span>
     </a>
-    <button class="burger" aria-label="Abrir menu">☰</button>
+    <button class="burger" id="burger" aria-label="Abrir menu">☰</button>
     <div class="nav-links">
       <a href="Pag01.html">Início</a>
       <a href="Catalogo.html" aria-current="page">Catálogo</a>
@@ -74,39 +74,50 @@
 </footer>
 <div class="toast" role="status" aria-live="polite"></div>
 
-<!-- Deixe este defer se seu java.js não renderiza catálogo; caso renderize, retire a parte do catálogo no java.js -->
-<script src="java.js" defer></script>
-
-<!-- Integração com livros reais -->
+<!-- Catálogo: usa APENAS os livros do ./js/books.js -->
 <script type="module">
   import { BOOKS, generateCoverDataURL } from './js/books.js';
 
-  const grid = document.querySelector('#catalog-grid');
-  const chipsWrap = document.querySelector('#chips');
-  const searchInput = document.querySelector('#search-books');
+  // menu mobile
+  const burger = document.getElementById('burger');
+  const links  = document.querySelector('.nav-links');
+  burger?.addEventListener('click', () => links.classList.toggle('show'));
 
+  const grid       = document.querySelector('#catalog-grid');
+  const chipsWrap  = document.querySelector('#chips');
+  const searchInput= document.querySelector('#search-books');
+
+  // estado + leitura/escrita na URL (?q=&genre=)
+  const params = new URLSearchParams(location.search);
   const state = {
-    q: '',
-    genre: 'Todos'
+    q: params.get('q') || '',
+    genre: params.get('genre') || 'Todos'
   };
+  if (searchInput) searchInput.value = state.q;
 
   const uniq = (arr) => [...new Set(arr)];
-  const allGenres = uniq(
-    BOOKS.flatMap(b => (b.genres || []))
-  ).sort();
+  const allGenres = uniq(BOOKS.flatMap(b => (b.genres || []))).sort();
+
+  function updateURL() {
+    const p = new URLSearchParams();
+    if (state.q) p.set('q', state.q);
+    if (state.genre && state.genre !== 'Todos') p.set('genre', state.genre);
+    const qs = p.toString();
+    history.replaceState(null, '', qs ? `?${qs}` : location.pathname);
+  }
 
   function renderChips() {
+    if (!chipsWrap) return;
     const items = ['Todos', ...allGenres];
     chipsWrap.innerHTML = items.map(g => `
-      <button class="chip${g === state.genre ? ' active' : ''}" data-genre="${g}" type="button">
-        ${g}
-      </button>
+      <button class="chip${g === state.genre ? ' active' : ''}" data-genre="${g}" type="button">${g}</button>
     `).join('');
     chipsWrap.querySelectorAll('[data-genre]').forEach(btn => {
       btn.addEventListener('click', () => {
         chipsWrap.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
         btn.classList.add('active');
         state.genre = btn.dataset.genre;
+        updateURL();
         renderGrid();
       });
     });
@@ -115,9 +126,9 @@
   function cardHTML(b) {
     const cover = b.cover ?? generateCoverDataURL(b.title, b.author);
     return `
-      <article class="card">
+      <article class="card" data-id="${b.id}">
         <div class="card-media">
-          <img src="${cover}" alt="Capa de ${b.title}">
+          <img data-id="${b.id}" src="${cover}" alt="Capa de ${b.title}">
         </div>
         <div class="card-body">
           <div class="card-title">${b.title}</div>
@@ -135,7 +146,7 @@
     if (state.q) {
       const q = state.q.toLowerCase();
       arr = arr.filter(b =>
-        (b.title || '').toLowerCase().includes(q) ||
+        (b.title  || '').toLowerCase().includes(q) ||
         (b.author || '').toLowerCase().includes(q)
       );
     }
@@ -145,17 +156,30 @@
     return arr;
   }
 
+  function attachCoverFallback() {
+    // se alguma capa falhar, troca pelo SVG temático
+    grid.querySelectorAll('img[data-id]').forEach(img => {
+      img.addEventListener('error', () => {
+        const id = img.dataset.id;
+        const b = BOOKS.find(x => x.id === id);
+        if (b) img.src = generateCoverDataURL(b.title, b.author);
+      }, { once: true });
+    });
+  }
+
   function renderGrid() {
     const list = applyFilters(BOOKS);
     grid.innerHTML = list.length
       ? list.map(cardHTML).join('')
       : `<p style="color:var(--muted)">Nenhum livro encontrado para os filtros atuais.</p>`;
+    attachCoverFallback();
   }
 
   // Busca
   if (searchInput) {
     searchInput.addEventListener('input', () => {
       state.q = searchInput.value.trim();
+      updateURL();
       renderGrid();
     });
   }

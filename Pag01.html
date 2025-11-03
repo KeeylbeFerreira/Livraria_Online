@@ -51,48 +51,8 @@
 <section class="section">
   <div class="container">
     <h2>Destaques da Semana</h2>
-    <div class="grid cols-4">
-      <article class="card">
-        <div class="card-media"><img src="https://picsum.photos/seed/ke1/400/540" alt="Capa do livro em destaque"></div>
-        <div class="card-body">
-          <div class="card-title">A Biblioteca Invisível</div>
-          <div class="card-sub">C. Pereira • <span class="rating">★ 4.7</span></div>
-          <div class="card-actions">
-            <a class="btn btn-primary" href="Catalogo.html">Ver no catálogo</a>
-          </div>
-        </div>
-      </article>
-      <article class="card">
-        <div class="card-media"><img src="https://picsum.photos/seed/ke2/400/540" alt="Capa do livro em destaque"></div>
-        <div class="card-body">
-          <div class="card-title">O Método da Leitura</div>
-          <div class="card-sub">A. Souza • <span class="rating">★ 4.6</span></div>
-          <div class="card-actions">
-            <a class="btn btn-primary" href="Catalogo.html">Ver no catálogo</a>
-          </div>
-        </div>
-      </article>
-      <article class="card">
-        <div class="card-media"><img src="https://picsum.photos/seed/ke3/400/540" alt="Capa do livro em destaque"></div>
-        <div class="card-body">
-          <div class="card-title">Negócios sem Mistério</div>
-          <div class="card-sub">B. Lima • <span class="rating">★ 4.5</span></div>
-          <div class="card-actions">
-            <a class="btn btn-primary" href="Catalogo.html">Ver no catálogo</a>
-          </div>
-        </div>
-      </article>
-      <article class="card">
-        <div class="card-media"><img src="https://picsum.photos/seed/ke4/400/540" alt="Capa do livro em destaque"></div>
-        <div class="card-body">
-          <div class="card-title">Algoritmos Ilustrados</div>
-          <div class="card-sub">D. Santos • <span class="rating">★ 4.8</span></div>
-          <div class="card-actions">
-            <a class="btn btn-primary" href="Catalogo.html">Ver no catálogo</a>
-          </div>
-        </div>
-      </article>
-    </div>
+    <!-- grade dinâmica com seus livros -->
+    <div id="home-destaques" class="grid cols-4"></div>
   </div>
 </section>
 
@@ -120,6 +80,49 @@
   </div>
 </footer>
 <div class="toast" role="status" aria-live="polite"></div>
-<script src="java.js" defer></script>
+
+<!-- Render dos destaques (usa seus dados em ./js/books.js) -->
+<script type="module">
+  import { BOOKS, generateCoverDataURL } from './js/books.js';
+
+  const grid = document.querySelector('#home-destaques');
+
+  const cardHTML = (b) => {
+    const cover = b.cover ?? generateCoverDataURL(b.title, b.author);
+    return `
+      <article class="card" data-id="${b.id}">
+        <div class="card-media">
+          <img data-id="${b.id}" src="${cover}" alt="Capa de ${b.title}">
+        </div>
+        <div class="card-body">
+          <div class="card-title">${b.title}</div>
+          <div class="card-sub">${b.author}</div>
+          <div class="card-actions">
+            <a class="btn btn-primary" href="leitura.html?id=${encodeURIComponent(b.id)}">Ler</a>
+          </div>
+        </div>
+      </article>`;
+  };
+
+  // fallback de capa se a imagem falhar
+  function attachCoverFallback(root) {
+    root.querySelectorAll('img[data-id]').forEach(img => {
+      img.addEventListener('error', () => {
+        const b = BOOKS.find(x => x.id === img.dataset.id);
+        if (b) img.src = generateCoverDataURL(b.title, b.author);
+      }, { once: true });
+    });
+  }
+
+  // pega até 4 destaques (aleatórios) dos seus livros
+  function sample(arr, n){
+    return arr.slice().sort(() => 0.5 - Math.random()).slice(0, n);
+  }
+  const destaques = sample(BOOKS, Math.min(4, BOOKS.length));
+
+  grid.innerHTML = destaques.map(cardHTML).join('');
+  attachCoverFallback(grid);
+</script>
+
 </body>
 </html>
