@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Entrar — Livraria do Ke</title>
-    <meta name="description" content="Faça login para acessar sua conta.">
+    <title>Criar conta — Livraria do Ke</title>
+    <meta name="description" content="Crie sua conta gratuitamente.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -23,20 +23,21 @@
       <a href="Pag01.html">Início</a>
       <a href="Catalogo.html">Catálogo</a>
       <a href="sobre.html">Sobre</a>
-      <a href="index.html" aria-current="page">Entrar</a>
-    </div>
-    <div class="nav-cta">
-      <!-- novo: botão de cadastro no topo -->
-      <a class="btn btn-primary" href="cadastro.html">Criar conta</a>
+      <a href="index.html">Entrar</a>
     </div>
   </nav>
 </header>
 
 <main class="section">
   <div class="container">
-    <h2>Bem-vindo de volta</h2>
+    <h2>Crie sua conta</h2>
 
-    <form id="login-form" class="form" novalidate>
+    <form id="signup-form" class="form" novalidate>
+      <div class="input">
+        <label for="name">Nome</label>
+        <input id="name" name="name" type="text" placeholder="Seu nome" required>
+      </div>
+
       <div class="input">
         <label for="email">E-mail</label>
         <input id="email" name="email" type="email" placeholder="seuemail@exemplo.com" required>
@@ -45,17 +46,22 @@
       <div class="input">
         <label for="password">Senha</label>
         <div style="display:flex; gap:.5rem">
-          <input id="password" name="password" type="password" placeholder="••••••••" required style="flex:1">
+          <input id="password" name="password" type="password" placeholder="Mín. 8 caracteres" required style="flex:1" minlength="8">
           <button type="button" class="btn" data-toggle="password" data-target="password" aria-pressed="false" title="Mostrar/ocultar senha">👁</button>
         </div>
-        <div class="form-hint">Dica: use pelo menos 8 caracteres.</div>
       </div>
 
-      <button class="btn btn-primary" type="submit">Entrar</button>
+      <div class="input">
+        <label for="confirm">Confirmar senha</label>
+        <div style="display:flex; gap:.5rem">
+          <input id="confirm" name="confirm" type="password" placeholder="Repita a senha" required style="flex:1" minlength="8">
+          <button type="button" class="btn" data-toggle="password" data-target="confirm" aria-pressed="false" title="Mostrar/ocultar senha">👁</button>
+        </div>
+      </div>
 
-      <!-- novo: atalho para cadastro abaixo do form -->
+      <button class="btn btn-primary" type="submit">Criar conta</button>
       <div style="margin-top:.75rem">
-        <a class="btn btn-outline" href="cadastro.html">Ainda não tem conta? Criar conta</a>
+        <a class="btn btn-outline" href="index.html">Já tem conta? Entrar</a>
       </div>
     </form>
   </div>
@@ -64,10 +70,10 @@
 <script>
   // foco inicial
   window.addEventListener('DOMContentLoaded', () => {
-    const email = document.getElementById('email'); if (email) email.focus();
+    const name = document.getElementById('name'); if (name) name.focus();
   });
 
-  // mostrar/ocultar senha
+  // mostrar/ocultar senhas
   document.querySelectorAll('[data-toggle="password"]').forEach(btn => {
     const target = document.getElementById(btn.dataset.target);
     btn.addEventListener('click', () => {
@@ -77,28 +83,37 @@
     });
   });
 
-  // login demo com localStorage
-  const form = document.getElementById('login-form');
   function toast(msg){
     const t = document.querySelector('.toast'); if(!t) return alert(msg);
     t.textContent = msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 2600);
   }
+
+  // cadastro demo com localStorage
+  const form = document.getElementById('signup-form');
   form.addEventListener('submit', (e) => {
     e.preventDefault();
+
+    const name  = (document.getElementById('name').value || '').trim();
     const email = (document.getElementById('email').value || '').trim().toLowerCase();
-    const password = document.getElementById('password').value || '';
+    const pass  = document.getElementById('password').value || '';
+    const conf  = document.getElementById('confirm').value || '';
+
+    if (!name || !email || !pass || !conf) { toast('Preencha todos os campos.'); return; }
+    if (pass.length < 8) { toast('A senha deve ter pelo menos 8 caracteres.'); return; }
+    if (pass !== conf) { toast('As senhas não coincidem.'); return; }
 
     const users = JSON.parse(localStorage.getItem('ldk_users') || '[]');
-    const found = users.find(u => u.email === email && u.password === password);
-
-    if (found) {
-      localStorage.setItem('ldk_current_user', JSON.stringify({ name: found.name, email: found.email }));
-      toast('Login realizado!');
-      // redireciona para a home
-      setTimeout(()=>location.href = 'Pag01.html', 600);
-    } else {
-      toast('E-mail ou senha inválidos. Crie uma conta.');
+    if (users.some(u => u.email === email)) {
+      toast('Este e-mail já está cadastrado.');
+      return;
     }
+
+    users.push({ name, email, password: pass });
+    localStorage.setItem('ldk_users', JSON.stringify(users));
+    localStorage.setItem('ldk_current_user', JSON.stringify({ name, email }));
+
+    toast('Conta criada com sucesso!');
+    setTimeout(()=>location.href = 'Pag01.html', 700);
   });
 </script>
 
@@ -116,7 +131,7 @@
       <strong>Links</strong><br>
       <a href="Catalogo.html">Catálogo</a><br>
       <a href="sobre.html">Sobre</a><br>
-      <a href="index.html" aria-current="page">Entrar</a>
+      <a href="index.html">Entrar</a>
     </div>
     <div>
       <strong>Contato</strong><br>
