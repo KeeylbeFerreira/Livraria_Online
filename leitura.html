@@ -10,13 +10,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <style>
-    /* ajustes visuais do leitor PDF */
     .pdf-frame{
-      width:100%;
-      height:82vh;
-      border:1px solid #e6e8ef;
-      border-radius:12px;
-      background:#fff;
+      width:100%; height:82vh;
+      border:1px solid #e6e8ef; border-radius:12px; background:#fff;
       box-shadow:0 10px 26px rgba(13,42,74,.08);
     }
     .reader-header{ display:flex; align-items:center; gap:.75rem; flex-wrap:wrap }
@@ -24,12 +20,11 @@
     .reader-meta{ color:var(--muted) }
     .reader-actions{ display:flex; gap:.5rem; flex-wrap:wrap }
 
-    /* modo foco: esconde header/rodapé p/ leitura */
-    body.is-focus .header,
-    body.is-focus .footer { display:none }
+    /* Modo foco: esconde header/rodapé */
+    body.is-focus .header, body.is-focus .footer { display:none }
     body.is-focus .pdf-frame{ height: calc(100vh - 48px) }
 
-    /* largura cheia do container */
+    /* Largura cheia */
     .reader-shell.is-wide .reader-body{ max-width:none }
     .reader-shell.is-wide .pdf-frame{ height: 88vh }
   </style>
@@ -42,7 +37,7 @@
       <img src="assets/img/logo-livraria.png" alt="Logo Livraria do Ke">
       <span>Livraria do Ke</span>
     </a>
-    <button class="burger" aria-label="Abrir menu">☰</button>
+    <button class="burger" id="burger" aria-label="Abrir menu">☰</button>
     <div class="nav-links">
       <a href="Pag01.html">Início</a>
       <a href="Catalogo.html">Catálogo</a>
@@ -54,8 +49,8 @@
 
 <main class="section">
   <div class="container">
-    <div class="reader-shell theme-light" id="reader-shell">
-      <!-- Topo do leitor -->
+    <div class="reader-shell" id="reader-shell">
+      <!-- Topo -->
       <div class="reader-top">
         <div class="reader-header">
           <a class="btn" href="Catalogo.html">← Voltar</a>
@@ -65,16 +60,23 @@
         <div class="reader-actions">
           <button class="btn" id="focus-toggle" title="Modo foco (F)">Modo foco</button>
           <button class="btn" id="wide-toggle" title="Largura cheia (W)">Largura cheia</button>
+
+          <!-- Temas do leitor -->
+          <div class="ctrl" style="display:inline-flex; gap:.25rem">
+            <button class="btn" id="theme-light"  title="Claro">Claro</button>
+            <button class="btn" id="theme-dark"   title="Escuro">Escuro</button>
+            <button class="btn" id="theme-sepia"  title="Sépia">Sépia</button>
+          </div>
+
           <a class="btn btn-outline" id="download-link" href="#" download>Baixar PDF</a>
           <a class="btn" id="newtab-link" href="#" target="_blank" rel="noopener">Abrir em nova aba</a>
         </div>
       </div>
 
-      <!-- Corpo do leitor -->
+      <!-- Corpo -->
       <div class="reader-body" style="grid-template-columns: 1fr; max-width: 1120px; margin: 0 auto;">
         <section class="reader-main">
           <div style="margin-top:.75rem">
-            <!-- PDF sem a barra do visualizador nativo -->
             <iframe id="pdf" class="pdf-frame" title="Leitor de PDF"></iframe>
           </div>
         </section>
@@ -110,6 +112,22 @@
 <script type="module">
   import { BOOKS } from './js/books.js';
 
+  // util: aceita 'senhora.pdf' OU 'assets/books/senhora.pdf'
+  function normalizePath(file) {
+    // se já tem pasta, mantém; se for só o nome, prefixa
+    const hasDir = /[\\/]/.test(file);
+    const base = hasDir ? file : `assets/books/${file}`;
+    // codifica apenas o último segmento (nome do arquivo) para suportar espaços/acentos
+    const parts = base.split('/');
+    parts[parts.length - 1] = encodeURIComponent(parts[parts.length - 1]);
+    return parts.join('/');
+  }
+
+  // navbar mobile
+  const burger = document.getElementById('burger');
+  const links  = document.querySelector('.nav-links');
+  burger?.addEventListener('click', () => links.classList.toggle('show'));
+
   const params = new URLSearchParams(location.search);
   const id = params.get('id');
 
@@ -129,38 +147,54 @@
     titleEl.textContent = book.title;
     metaEl.textContent  = `${book.author}${book.genres ? ' • ' + book.genres.join(' • ') : ''}`;
 
-    // caminho do PDF (codificando nome para suportar espaços/acentos)
-    const fileName = encodeURIComponent(book.file);
-    const path = `assets/books/${fileName}`;
-
-    // abre no iframe sem toolbar; "FitH" deixa largura ajustada
+    const path = normalizePath(book.file);
+    // sem toolbar do viewer nativo; FitH ajusta largura
     frame.src = `${path}#toolbar=0&navpanes=0&view=FitH`;
-
-    // ações
     dlLink.href  = path;
     dlLink.setAttribute('download', `${book.title}.pdf`);
     tabLink.href = path;
+
+    document.title = `${book.title} — Leitura • Livraria do Ke`;
   }
 
-  // Modo foco (esconde header/footer)
+  // Modo foco (F)
   const focusBtn = document.getElementById('focus-toggle');
   focusBtn.addEventListener('click', () => {
     document.body.classList.toggle('is-focus');
   });
-  // atalho F
   document.addEventListener('keydown', (e) => {
     if (e.key.toLowerCase() === 'f') focusBtn.click();
   });
 
-  // Largura cheia do leitor
+  // Largura cheia (W)
   const wideBtn = document.getElementById('wide-toggle');
   wideBtn.addEventListener('click', () => {
     shell.classList.toggle('is-wide');
   });
-  // atalho W
   document.addEventListener('keydown', (e) => {
     if (e.key.toLowerCase() === 'w') wideBtn.click();
   });
+
+  // Temas do leitor (persistidos)
+  const themeBtns = {
+    light: document.getElementById('theme-light'),
+    dark:  document.getElementById('theme-dark'),
+    sepia: document.getElementById('theme-sepia'),
+  };
+
+  function applyTheme(name){
+    shell.classList.remove('theme-dark','theme-sepia','theme-night');
+    if (name === 'dark')  shell.classList.add('theme-dark');
+    if (name === 'sepia') shell.classList.add('theme-sepia');
+    localStorage.setItem('readerTheme', name);
+  }
+
+  themeBtns.light.addEventListener('click', () => applyTheme('light'));
+  themeBtns.dark .addEventListener('click', () => applyTheme('dark'));
+  themeBtns.sepia.addEventListener('click', () => applyTheme('sepia'));
+
+  // restaura tema salvo
+  applyTheme(localStorage.getItem('readerTheme') || 'light');
 </script>
 </body>
 </html>
