@@ -39,6 +39,40 @@ export const BOOKS = [
     file: "iracema.pdf",
     cover: "assets/capa_livros/capa_iracema.PNG",
     genres: ["Romance", "Indianista", "Clássico"]
+  },
+
+  // ===== Novos livros com capas =====
+  {
+    id: "o-alienista",
+    title: "O Alienista",
+    author: "Machado de Assis",
+    file: "O-Alienista.pdf",
+    cover: "assets/capa_livros/capa_alineista.PNG", // atenção ao nome do arquivo (.PNG)
+    genres: ["Ficção", "Clássico Brasileiro", "Sátira"]
+  },
+  {
+    id: "arte-da-guerra",
+    title: "A Arte da Guerra",
+    author: "Sun Tzu",
+    file: "A-ARTE-DA-GUERRA.pdf",
+    cover: "assets/capa_livros/capa_arte_guerra.PNG",
+    genres: ["Estratégia", "Clássico", "Negócios"]
+  },
+  {
+    id: "politica-aristoteles",
+    title: "A Política",
+    author: "Aristóteles",
+    file: "politica.pdf",
+    cover: "assets/capa_livros/capa_politica.PNG",
+    genres: ["Filosofia", "Política", "Clássico"]
+  },
+  {
+    id: "o-sertanejo",
+    title: "O Sertanejo",
+    author: "José de Alencar",
+    file: "sertanejo.pdf",
+    cover: "assets/capa_livros/capa_sertanejo.PNG",
+    genres: ["Romance", "Clássico Brasileiro", "Regionalismo"]
   }
 ];
 
