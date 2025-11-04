@@ -247,4 +247,60 @@ kbd{background:#11182710; border:1px solid #e6e8ef; padding:.15rem .35rem; borde
   box-shadow:0 10px 26px rgba(0,0,0,.45);
   color-scheme: dark;              /* alguns viewers respeitam dark scheme */
 }
+/* Fundo com imagem + overlay suave só na página de login */
+.auth-bg{
+  position: relative;
+  isolation: isolate;                 /* garante que o pseudo-elemento fique atrás */
+  padding-block: 3.5rem;              /* dá respiro vertical */
+}
+
+/* Imagem de fundo com fade (overlay) */
+.auth-bg::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(13,42,74,.35),             /* topo mais escuro */
+      rgba(13,42,74,.35)              /* base igual -> “fade” suave */
+    ),
+    url("assets/img/fundo_livros.jpg") center/cover no-repeat fixed;
+  opacity: 1;                         /* controle fino do “fade” geral (0–1) */
+  filter: grayscale(.05);             /* leve desaturação pra não brigar com o form */
+  z-index:-1;
+}
+
+/* Deixa o card do formulário um pouquinho translúcido e com blur sutil */
+.auth-bg .form{
+  background: rgba(255,255,255,.92);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px); /* compat WebKit */
+  box-shadow: 0 12px 30px rgba(13,42,74,.18);
+  border-color: rgba(255,255,255,.6);
+}
+
+/* Ajuste de contraste dos textos do título em cima da imagem */
+.auth-bg h2{
+  color: #0b1320;
+  text-shadow: 0 1px 0 rgba(255,255,255,.35);
+}
+
+/* Em telas pequenas, escurece um pouco mais o overlay para manter legibilidade */
+@media (max-width: 760px){
+  .auth-bg::before{
+    background:
+      linear-gradient(to bottom, rgba(13,42,74,.45), rgba(13,42,74,.45)),
+      url("assets/img/fundo_livros.jpg") center/cover no-repeat fixed;
+  }
+}
+/* ===== Login: eliminar faixa branca antes do rodapé ===== */
+.auth-bg{
+  /* já tem o overlay ::before, aqui só ajustamos o encaixe */
+  padding-bottom: 3rem;      /* respiro interno */
+  margin-bottom: -1.5rem;    /* puxa o footer pra cima, cobrindo a faixa */
+}
+.login-page{
+  background: #0D2A4A; /* ou use var(--navy-700) se preferir manter por variável */
+}
 
