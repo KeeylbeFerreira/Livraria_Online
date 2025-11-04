@@ -303,4 +303,32 @@ kbd{background:#11182710; border:1px solid #e6e8ef; padding:.15rem .35rem; borde
 .login-page{
   background: #0D2A4A; /* ou use var(--navy-700) se preferir manter por variável */
 }
+/* Lista de contato no rodapé (só imagem + texto, sem link) */
+.footer .contact-list{
+  list-style: none;
+  margin: .35rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: .45rem;
+}
+
+.footer .contact{
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  color: #fff;            /* texto claro no fundo azul */
+  opacity: .9;
+}
+
+.footer .contact img{
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  display: inline-block;
+  border-radius: 4px;     /* arredonda cantos se a imagem tiver fundo */
+}
+
+/* opcional: realce leve ao passar o mouse */
+.footer .contact:hover{ opacity: 1; }
 
