@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Meu Perfil — Livraria do Ke</title>
+  <meta name="description" content="Gerencie seus dados de perfil.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Estilos específicos da página de perfil (enxutos) */
+    .profile-header{
+      display:flex; align-items:center; gap:1rem; margin-bottom:1rem;
+    }
+    .avatar{
+      width:72px; height:72px; border-radius:50%;
+      background:linear-gradient(145deg, #0D2A4A 0%, #163a61 100%);
+      color:#fff; display:flex; align-items:center; justify-content:center;
+      font-weight:800; font-size:1.6rem; letter-spacing:.5px;
+      box-shadow:0 8px 20px rgba(13,42,74,.28);
+      border:2px solid rgba(255,255,255,.25);
+    }
+    .profile-meta{ color:var(--muted) }
+    .cards{ display:grid; grid-template-columns: 1fr 1fr; gap:1rem }
+    @media (max-width: 900px){ .cards{ grid-template-columns:1fr } }
+    .danger{ background:#ef4444; border-color:#ef4444; color:#fff }
+    .danger:hover{ background:#dc2626; border-color:#dc2626 }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <nav class="nav container" aria-label="Principal">
+    <a class="brand" href="Pag01.html">
+      <img src="assets/img/logo-livraria.png" alt="Logo Livraria do Ke">
+      <span>Livraria do Ke</span>
+    </a>
+
+    <button class="burger" aria-label="Abrir menu">☰</button>
+    <div class="nav-links">
+      <a href="Pag01.html">Início</a>
+      <a href="Catalogo.html">Catálogo</a>
+      <a href="sobre.html">Sobre</a>
+      <a href="index.html">Entrar</a>
+    </div>
+
+    <div class="nav-cta">
+      <div id="user-area"></div>
+      <!-- Botão de tema (seu JS troca o ícone automaticamente) -->
+      <button id="theme-toggle" class="btn btn-icon" title="Tema"></button>
+    </div>
+  </nav>
+</header>
+
+<main class="section">
+  <div class="container" style="max-width:880px">
+    <div class="profile-header">
+      <div class="avatar" id="avatar">U</div>
+      <div>
+        <h2 id="user-name" style="margin:0">Usuário</h2>
+        <div class="profile-meta" id="user-email">email@exemplo.com</div>
+      </div>
+    </div>
+
+    <div class="cards">
+      <!-- Atualizar nome -->
+      <form id="name-form" class="form" novalidate>
+        <h3 style="margin-top:0">Informações básicas</h3>
+        <div class="input">
+          <label for="name">Nome</label>
+          <input id="name" type="text" placeholder="Seu nome completo" required>
+        </div>
+        <button class="btn btn-primary" type="submit">Salvar nome</button>
+      </form>
+
+      <!-- Trocar senha -->
+      <form id="password-form" class="form" novalidate>
+        <h3 style="margin-top:0">Alterar senha</h3>
+        <div class="input">
+          <label for="current">Senha atual</label>
+          <input id="current" type="password" placeholder="••••••••" required>
+        </div>
+        <div class="input">
+          <label for="newpass">Nova senha</label>
+          <input id="newpass" type="password" placeholder="Min. 8 caracteres" required>
+        </div>
+        <div class="input">
+          <label for="confirm">Confirmar nova senha</label>
+          <input id="confirm" type="password" placeholder="Repita a nova senha" required>
+        </div>
+        <button class="btn btn-primary" type="submit">Atualizar senha</button>
+      </form>
+    </div>
+
+    <div class="form" style="margin-top:1rem">
+      <h3 style="margin-top:0">Sessão e conta</h3>
+      <div style="display:flex; gap:.5rem; flex-wrap:wrap">
+        <button id="logout" class="btn btn-outline" type="button">Sair</button>
+        <button id="delete" class="btn danger" type="button">Excluir conta</button>
+      </div>
+      <p class="form-hint" style="margin-top:.75rem">
+        Aviso: este projeto usa <strong>localStorage</strong> apenas para fins didáticos. Não utilize senhas reais.
+      </p>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container cols">
+    <div>
+      <a class="brand" href="Pag01.html">
+        <img src="assets/img/logo-livraria.png" alt="Logo Livraria do Ke">
+        <span>Livraria do Ke</span>
+      </a>
+      <p>Leitura que inspira. Atendimento humanizado e entrega para todo o Brasil.</p>
+      <small>© 2025 Livraria do Ke. Todos os direitos reservados.</small>
+    </div>
+    <div>
+      <strong>Links</strong><br>
+      <a href="Catalogo.html">Catálogo</a><br>
+      <a href="sobre.html">Sobre</a><br>
+      <a href="perfil.html" aria-current="page">Meu Perfil</a>
+    </div>
+    <div>
+      <strong>Contato</strong><br>
+      <ul class="contact-list">
+        <li class="contact"><img src="assets/img/icone_gmail.png" alt=""> contato@livrariadoke.com</li>
+        <li class="contact"><img src="assets/img/icone_whats.png" alt=""> (00) 00000-0000</li>
+      </ul>
+    </div>
+  </div>
+</footer>
+<div class="toast" role="status" aria-live="polite"></div>
+
+<script src="java.js"></script>
+<script>
+  // Pequenas utilidades locais
+  const toast = (msg) => {
+    const t = document.querySelector('.toast'); t.textContent = msg;
+    t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 2500);
+  };
+
+  // Guarda de rota: precisa estar logado
+  const current = JSON.parse(localStorage.getItem('ldk_current_user') || 'null');
+  if (!current || !current.email) {
+    toast('Faça login para acessar o perfil.');
+    setTimeout(()=> location.href = 'index.html', 800);
+  }
+
+  // Preenche cabeçalho
+  const nameEl = document.getElementById('user-name');
+  const mailEl = document.getElementById('user-email');
+  const avatar = document.getElementById('avatar');
+  const nameInput = document.getElementById('name');
+
+  function initials(n){ 
+    const parts = (n||'').trim().split(/\s+/).slice(0,2);
+    return parts.map(p=>p[0]||'U').join('').toUpperCase();
+  }
+
+  function refreshHeader(){
+    const cur = JSON.parse(localStorage.getItem('ldk_current_user'));
+    nameEl.textContent = cur?.name || 'Usuário';
+    mailEl.textContent = cur?.email || '';
+    avatar.textContent = initials(cur?.name || cur?.email || 'U');
+    nameInput.value = cur?.name || '';
+  }
+  refreshHeader();
+
+  // Atualizar nome
+  document.getElementById('name-form').addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const newName = nameInput.value.trim();
+    if(!newName){ toast('Informe um nome.'); return; }
+
+    const email = current.email;
+    const users = JSON.parse(localStorage.getItem('ldk_users') || '[]');
+    const idx = users.findIndex(u => u.email.toLowerCase() === email.toLowerCase());
+    if (idx >= 0) {
+      users[idx].name = newName;
+      localStorage.setItem('ldk_users', JSON.stringify(users));
+    }
+    localStorage.setItem('ldk_current_user', JSON.stringify({ name:newName, email }));
+    toast('Nome atualizado!');
+    refreshHeader();
+  });
+
+  // Trocar senha
+  document.getElementById('password-form').addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const cur = document.getElementById('current').value;
+    const np  = document.getElementById('newpass').value;
+    const cf  = document.getElementById('confirm').value;
+
+    const users = JSON.parse(localStorage.getItem('ldk_users') || '[]');
+    const u = users.find(u => u.email.toLowerCase() === current.email.toLowerCase());
+    if(!u){ toast('Conta não encontrada.'); return; }
+
+    if(u.password !== cur){ toast('Senha atual incorreta.'); return; }
+    if(np.length < 8){ toast('A nova senha deve ter pelo menos 8 caracteres.'); return; }
+    if(np !== cf){ toast('Confirmação não confere.'); return; }
+    if(np === cur){ toast('A nova senha deve ser diferente da atual.'); return; }
+
+    u.password = np;
+    localStorage.setItem('ldk_users', JSON.stringify(users));
+    toast('Senha alterada com sucesso!');
+    e.target.reset();
+  });
+
+  // Sair
+  document.getElementById('logout').addEventListener('click', ()=>{
+    localStorage.removeItem('ldk_current_user');
+    toast('Sessão encerrada.');
+    setTimeout(()=> location.href = 'Pag01.html', 500);
+  });
+
+  // Excluir conta (confirmação simples)
+  document.getElementById('delete').addEventListener('click', ()=>{
+    const c = prompt('Para excluir sua conta, digite: DELETAR');
+    if(c !== 'DELETAR') return;
+
+    const users = JSON.parse(localStorage.getItem('ldk_users') || '[]')
+      .filter(u => u.email.toLowerCase() !== current.email.toLowerCase());
+    localStorage.setItem('ldk_users', JSON.stringify(users));
+    localStorage.removeItem('ldk_current_user');
+
+    toast('Conta excluída.');
+    setTimeout(()=> location.href = 'Pag01.html', 700);
+  });
+</script>
+</body>
+</html>
