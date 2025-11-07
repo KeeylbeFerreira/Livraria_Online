@@ -24,6 +24,7 @@ img{max-width:100%; height:auto; display:block}
 a{color:inherit; text-decoration:none}
 .container{width:100%; max-width:1120px; margin-inline:auto; padding-inline:1rem}
 
+/* Header / Nav */
 .header{
   position:sticky; top:0; z-index:1000;
   background:linear-gradient(0deg, rgba(13,42,74,0.96), rgba(13,42,74,0.96));
@@ -92,6 +93,20 @@ a{color:inherit; text-decoration:none}
 }
 .searchbar .btn{white-space:nowrap}
 
+/* Reader: topo preto no TEMA CLARO (no dark mantém claro) */
+:root:not([data-theme="dark"]) .reader-shell .reader-top{
+  color:#0b1320 !important;
+}
+:root:not([data-theme="dark"]) .reader-shell .reader-top .reader-header h2,
+:root:not([data-theme="dark"]) .reader-shell .reader-top .reader-meta,
+:root:not([data-theme="dark"]) .reader-shell .reader-top a,
+:root:not([data-theme="dark"]) .reader-shell .reader-top .btn{
+  color:#0b1320 !important;
+}
+:root:not([data-theme="dark"]) .reader-shell .reader-top .btn.btn-outline{
+  border-color:#0b1320 !important;
+}
+
 /* Sections */
 .section{padding-block:3rem}
 .section h2{
@@ -141,7 +156,9 @@ a{color:inherit; text-decoration:none}
 .page-btn.active{background:var(--gold); border-color:var(--gold); color:#1b1200}
 
 /* Forms */
-.form{background:#fff; border:1px solid #e6e8ef; border-radius:1rem; padding:1.25rem; max-width:560px; margin-inline:auto}
+.form{
+  background:#fff; border:1px solid #e6e8ef; border-radius:1rem; padding:1.25rem; max-width:560px; margin-inline:auto
+}
 .input{display:flex; flex-direction:column; gap:.4rem; margin-bottom:1rem}
 .input label{font-weight:600; color:var(--ink)}
 .input input, .input select, .input textarea{
@@ -172,7 +189,7 @@ a{color:inherit; text-decoration:none}
 }
 .toast.show{opacity:1; transform: translateY(0)}
 
-/* Reader */
+/* Reader shell */
 .reader-shell{
   --reader-bg: #fff;
   --reader-ink: #111827;
@@ -258,9 +275,21 @@ kbd{background:#11182710; border:1px solid #e6e8ef; padding:.15rem .35rem; borde
   box-shadow: 0 12px 30px rgba(13,42,74,.18);
   border-color: rgba(255,255,255,.6);
 }
+/* Título do login mais visível */
 .auth-bg h2{
-  color: #0b1320;
-  text-shadow: 0 1px 0 rgba(255,255,255,.35);
+  color:#fff;
+  text-shadow:0 2px 6px rgba(0,0,0,.45);
+  font-weight:900;
+}
+/* "Criar conta" com a mesma cor do "Entrar" */
+.auth-bg .form .btn-outline{
+  background:var(--gold);
+  border-color:var(--gold);
+  color:#1b1200;
+}
+.auth-bg .form .btn-outline:hover{
+  background:var(--gold-700);
+  border-color:var(--gold-700);
 }
 
 /* ===== Tema Escuro Global ===== */
@@ -297,8 +326,30 @@ kbd{background:#11182710; border:1px solid #e6e8ef; padding:.15rem .35rem; borde
   color-scheme: dark;
 }
 
-/* Botão do tema */
+/* Botão do tema / ícone minimalista */
 .theme-toggle{ padding:.5rem .7rem; line-height:1; }
+.btn-icon{
+  padding:.55rem;
+  border-radius:.6rem;
+  background:transparent;
+  border:1px solid rgba(255,255,255,.28);
+  line-height:0;
+}
+.header .btn-icon{ color:#fff; }
+.btn-icon:hover{ background:rgba(255,255,255,.08); }
+/* foco acessível */
+.btn-icon:focus-visible{
+  outline:none;
+  box-shadow:var(--ring);
+}
+
+.icon{
+  width:22px; height:22px;
+  stroke:currentColor; fill:none;
+  stroke-width:2; stroke-linecap:round; stroke-linejoin:round;
+}
+/* Quando fora do header (ex.: páginas claras), borda mais sutil */
+:root:not(.in-header) .btn-icon{ border-color:#e6e8ef; }
 
 /* Rodapé: contatos com ícones (sem links clicáveis) */
 .footer .contact-list{
