@@ -23,11 +23,11 @@
       <a href="Pag01.html">Início</a>
       <a href="Catalogo.html" aria-current="page">Catálogo</a>
       <a href="sobre.html">Sobre</a>
-      <a href="index.html" id="link-entrar">Entrar</a><!-- oculto se logado -->
+      <a href="index.html">Entrar</a>
     </div>
-    <!-- área do usuário -->
-    <div class="nav-cta" id="user-area">
-      <a class="btn btn-outline" href="Pag01.html">Início</a>
+    <div class="nav-cta">
+      <button class="btn theme-toggle" id="theme-toggle" title="Alternar tema">🌙</button>
+      <div id="user-area"></div>
     </div>
   </nav>
 </header>
@@ -36,16 +36,12 @@
   <div class="container" style="display:grid; gap:1rem">
     <h1 class="sr-only" style="position:absolute;left:-9999px">Catálogo</h1>
 
-    <!-- Busca -->
     <form class="searchbar" role="search" aria-label="Buscar no catálogo" onsubmit="event.preventDefault()">
       <input id="search-books" type="search" placeholder="Busque por título ou autor…" aria-label="Buscar por título ou autor">
       <button class="btn btn-primary" type="button">Buscar</button>
     </form>
 
-    <!-- Chips dinâmicos (gêneros) -->
     <div id="chips" class="chips" aria-label="Categorias"></div>
-
-    <!-- Cards -->
     <section id="catalog-grid" class="grid cols-3" aria-live="polite"></section>
   </div>
 </main>
@@ -64,77 +60,33 @@
       <strong>Links</strong><br>
       <a href="Catalogo.html">Catálogo</a><br>
       <a href="sobre.html">Sobre</a><br>
-      <a href="index.html" aria-current="page">Entrar</a>
+      <a href="index.html">Entrar</a>
     </div>
     <div>
-  <strong>Contato</strong>
-  <ul class="contact-list">
-    <li class="contact">
-      <img src="assets/img/icone_gmail.png" alt="" aria-hidden="true">
-      <span>contato@livrariadoke.com</span>
-    </li>
-    <li class="contact">
-      <img src="assets/img/icone_whats.png" alt="" aria-hidden="true">
-      <span>(00) 00000-0000</span>
-    </li>
-  </ul>
-</div>
+      <strong>Contato</strong>
+      <ul class="contact-list">
+        <li class="contact"><img src="assets/img/icone_whats.jpg" alt="WhatsApp"> (00) 00000-0000</li>
+        <li class="contact"><img src="assets/img/icone_gmail.png" alt="E-mail"> contato@livrariadoke.com</li>
+      </ul>
+    </div>
   </div>
 </footer>
 <div class="toast" role="status" aria-live="polite"></div>
 
-<!-- Catálogo: usa APENAS os livros do ./js/books.js -->
+<script src="java.js" defer></script>
 <script type="module">
   import { BOOKS, generateCoverDataURL } from './js/books.js';
 
-  /* ======= Usuário no topo ======= */
-  const userArea   = document.getElementById('user-area');
-  const linkEntrar = document.getElementById('link-entrar');
-  const current    = JSON.parse(localStorage.getItem('ldk_current_user') || 'null');
-
-  if (current && (current.name || current.email)) {
-    if (linkEntrar) linkEntrar.style.display = 'none';
-
-    const firstName = (current.name || current.email).split(' ')[0];
-
-    const hello = document.createElement('span');
-    hello.className = 'chip';
-    hello.textContent = `Olá, ${firstName}`;
-
-    const inicio = document.createElement('a');
-    inicio.className = 'btn';
-    inicio.href = 'Pag01.html';
-    inicio.textContent = 'Início';
-
-    const logout = document.createElement('button');
-    logout.className = 'btn btn-outline';
-    logout.type = 'button';
-    logout.textContent = 'Sair';
-    logout.addEventListener('click', () => {
-      localStorage.removeItem('ldk_current_user');
-      location.reload();
-    });
-
-    userArea.innerHTML = '';
-    userArea.append(hello, inicio, logout);
-  }
-  /* ======= /Usuário no topo ======= */
-
-  // menu mobile
   const burger = document.getElementById('burger');
   const links  = document.querySelector('.nav-links');
   burger?.addEventListener('click', () => links.classList.toggle('show'));
 
-  const grid       = document.querySelector('#catalog-grid');
-  const chipsWrap  = document.querySelector('#chips');
-  const searchInput= document.querySelector('#search-books');
+  const grid        = document.querySelector('#catalog-grid');
+  const chipsWrap   = document.querySelector('#chips');
+  const searchInput = document.querySelector('#search-books');
 
-  // estado + leitura/escrita na URL (?q=&genre=)
   const params = new URLSearchParams(location.search);
-  const state = {
-    q: params.get('q') || '',
-    genre: params.get('genre') || 'Todos'
-  };
+  const state = { q: params.get('q') || '', genre: params.get('genre') || 'Todos' };
   if (searchInput) searchInput.value = state.q;
 
   const uniq = (arr) => [...new Set(arr)];
@@ -187,10 +139,7 @@
     let arr = list.slice();
     if (state.q) {
       const q = state.q.toLowerCase();
-      arr = arr.filter(b =>
-        (b.title  || '').toLowerCase().includes(q) ||
-        (b.author || '').toLowerCase().includes(q)
-      );
+      arr = arr.filter(b => (b.title||'').toLowerCase().includes(q) || (b.author||'').toLowerCase().includes(q));
     }
     if (state.genre && state.genre !== 'Todos') {
       arr = arr.filter(b => (b.genres || []).includes(state.genre));
@@ -198,25 +147,20 @@
     return arr;
   }
 
-  function attachCoverFallback() {
-    grid.querySelectorAll('img[data-id]').forEach(img => {
-      img.addEventListener('error', () => {
-        const id = img.dataset.id;
-        const b = BOOKS.find(x => x.id === id);
-        if (b) img.src = generateCoverDataURL(b.title, b.author);
-      }, { once: true });
-    });
-  }
-
   function renderGrid() {
     const list = applyFilters(BOOKS);
     grid.innerHTML = list.length
       ? list.map(cardHTML).join('')
       : `<p style="color:var(--muted)">Nenhum livro encontrado para os filtros atuais.</p>`;
-    attachCoverFallback();
+
+    grid.querySelectorAll('img[data-id]').forEach(img => {
+      img.addEventListener('error', () => {
+        const b = BOOKS.find(x => x.id === img.dataset.id);
+        if (b) img.src = generateCoverDataURL(b.title, b.author);
+      }, { once:true });
+    });
   }
 
-  // Busca
   if (searchInput) {
     searchInput.addEventListener('input', () => {
       state.q = searchInput.value.trim();

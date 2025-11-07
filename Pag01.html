@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="pt-BR">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Livraria do Ke — Início</title>
     <meta name="description" content="Descubra seu próximo livro favorito.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,11 +23,11 @@
       <a href="Pag01.html" aria-current="page">Início</a>
       <a href="Catalogo.html">Catálogo</a>
       <a href="sobre.html">Sobre</a>
-      <a href="index.html" id="link-entrar">Entrar</a> <!-- será oculto se logado -->
+      <a href="index.html">Entrar</a>
     </div>
-    <!-- ⚠️ dei um id para manipular via JS -->
-    <div class="nav-cta" id="user-area">
-      <a class="btn btn-outline" href="Catalogo.html">Explorar</a>
+    <div class="nav-cta">
+      <button class="btn theme-toggle" id="theme-toggle" title="Alternar tema">🌙</button>
+      <div id="user-area"></div>
     </div>
   </nav>
 </header>
@@ -70,71 +70,22 @@
       <strong>Links</strong><br>
       <a href="Catalogo.html">Catálogo</a><br>
       <a href="sobre.html">Sobre</a><br>
-      <a href="index.html" aria-current="page">Entrar</a>
+      <a href="index.html">Entrar</a>
     </div>
     <div>
-  <strong>Contato</strong>
-  <ul class="contact-list">
-    <li class="contact">
-      <img src="assets/img/icone_gmail.png" alt="" aria-hidden="true">
-      <span>contato@livrariadoke.com</span>
-    </li>
-    <li class="contact">
-      <img src="assets/img/icone_whats.png" alt="" aria-hidden="true">
-      <span>(00) 00000-0000</span>
-    </li>
-  </ul>
-</div>
-
+      <strong>Contato</strong>
+      <ul class="contact-list">
+        <li class="contact"><img src="assets/img/icone_whats.jpg" alt="WhatsApp"> (00) 00000-0000</li>
+        <li class="contact"><img src="assets/img/icone_gmail.png" alt="E-mail"> contato@livrariadoke.com</li>
+      </ul>
+    </div>
+  </div>
 </footer>
 <div class="toast" role="status" aria-live="polite"></div>
 
-<!-- 💡 Script rápido: mostra nome, esconde "Entrar" e adiciona "Sair" -->
-<script>
-  (function(){
-    const userArea = document.getElementById('user-area');
-    const linkEntrar = document.getElementById('link-entrar');
-    const current = JSON.parse(localStorage.getItem('ldk_current_user') || 'null');
-
-    if (!userArea) return;
-
-    if (current && (current.name || current.email)) {
-      // oculta "Entrar"
-      if (linkEntrar) linkEntrar.style.display = 'none';
-
-      const firstName = (current.name || current.email || 'Usuário').split(' ')[0];
-
-      // "Olá, Nome" como pill usando a classe .chip do seu CSS
-      const hello = document.createElement('span');
-      hello.className = 'chip';
-      hello.textContent = `Olá, ${firstName}`;
-
-      // botão Sair
-      const logout = document.createElement('button');
-      logout.className = 'btn btn-outline';
-      logout.type = 'button';
-      logout.textContent = 'Sair';
-      logout.addEventListener('click', () => {
-        localStorage.removeItem('ldk_current_user');
-        location.reload();
-      });
-
-      // opcional: atalho para catálogo continua
-      const explorar = document.createElement('a');
-      explorar.className = 'btn';
-      explorar.href = 'Catalogo.html';
-      explorar.textContent = 'Explorar';
-
-      userArea.innerHTML = '';
-      userArea.append(hello, explorar, logout);
-    }
-  })();
-</script>
-
-<!-- Render dos destaques (usa seus dados em ./js/books.js) -->
+<script src="java.js" defer></script>
 <script type="module">
   import { BOOKS, generateCoverDataURL } from './js/books.js';
-
   const grid = document.querySelector('#home-destaques');
 
   const cardHTML = (b) => {
@@ -154,20 +105,15 @@
       </article>`;
   };
 
-  function attachCoverFallback(root) {
-    root.querySelectorAll('img[data-id]').forEach(img => {
-      img.addEventListener('error', () => {
-        const b = BOOKS.find(x => x.id === img.dataset.id);
-        if (b) img.src = generateCoverDataURL(b.title, b.author);
-      }, { once: true });
-    });
-  }
-
-  function sample(arr, n){ return arr.slice().sort(() => 0.5 - Math.random()).slice(0, n); }
+  function sample(arr, n){ return arr.slice().sort(()=>0.5 - Math.random()).slice(0, n); }
   const destaques = sample(BOOKS, Math.min(4, BOOKS.length));
-
   grid.innerHTML = destaques.map(cardHTML).join('');
-  attachCoverFallback(grid);
+  grid.querySelectorAll('img[data-id]').forEach(img => {
+    img.addEventListener('error', () => {
+      const b = BOOKS.find(x => x.id === img.dataset.id);
+      if (b) img.src = generateCoverDataURL(b.title, b.author);
+    }, { once:true });
+  });
 </script>
 
 </body>

@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Criar conta — Livraria do Ke</title>
-    <meta name="description" content="Crie sua conta gratuitamente.">
+    <meta name="description" content="Cadastre-se para acessar sua conta.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -25,97 +25,37 @@
       <a href="sobre.html">Sobre</a>
       <a href="index.html">Entrar</a>
     </div>
+    <div class="nav-cta">
+      <button class="btn theme-toggle" id="theme-toggle" title="Alternar tema">🌙</button>
+      <div id="user-area"></div>
+    </div>
   </nav>
 </header>
 
 <main class="section">
   <div class="container">
-    <h2>Crie sua conta</h2>
-
+    <h2>Criar conta</h2>
     <form id="signup-form" class="form" novalidate>
       <div class="input">
         <label for="name">Nome</label>
         <input id="name" name="name" type="text" placeholder="Seu nome" required>
       </div>
-
       <div class="input">
         <label for="email">E-mail</label>
         <input id="email" name="email" type="email" placeholder="seuemail@exemplo.com" required>
       </div>
-
       <div class="input">
         <label for="password">Senha</label>
         <div style="display:flex; gap:.5rem">
-          <input id="password" name="password" type="password" placeholder="Mín. 8 caracteres" required style="flex:1" minlength="8">
+          <input id="password" name="password" type="password" placeholder="••••••••" required style="flex:1">
           <button type="button" class="btn" data-toggle="password" data-target="password" aria-pressed="false" title="Mostrar/ocultar senha">👁</button>
         </div>
+        <div class="form-hint">Mínimo de 8 caracteres.</div>
       </div>
-
-      <div class="input">
-        <label for="confirm">Confirmar senha</label>
-        <div style="display:flex; gap:.5rem">
-          <input id="confirm" name="confirm" type="password" placeholder="Repita a senha" required style="flex:1" minlength="8">
-          <button type="button" class="btn" data-toggle="password" data-target="confirm" aria-pressed="false" title="Mostrar/ocultar senha">👁</button>
-        </div>
-      </div>
-
-      <button class="btn btn-primary" type="submit">Criar conta</button>
-      <div style="margin-top:.75rem">
-        <a class="btn btn-outline" href="index.html">Já tem conta? Entrar</a>
-      </div>
+      <button class="btn btn-primary" type="submit">Cadastrar</button>
     </form>
   </div>
 </main>
-
-<script>
-  // foco inicial
-  window.addEventListener('DOMContentLoaded', () => {
-    const name = document.getElementById('name'); if (name) name.focus();
-  });
-
-  // mostrar/ocultar senhas
-  document.querySelectorAll('[data-toggle="password"]').forEach(btn => {
-    const target = document.getElementById(btn.dataset.target);
-    btn.addEventListener('click', () => {
-      const isPwd = target.type === 'password';
-      target.type = isPwd ? 'text' : 'password';
-      btn.setAttribute('aria-pressed', isPwd ? 'true' : 'false');
-    });
-  });
-
-  function toast(msg){
-    const t = document.querySelector('.toast'); if(!t) return alert(msg);
-    t.textContent = msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 2600);
-  }
-
-  // cadastro demo com localStorage
-  const form = document.getElementById('signup-form');
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    const name  = (document.getElementById('name').value || '').trim();
-    const email = (document.getElementById('email').value || '').trim().toLowerCase();
-    const pass  = document.getElementById('password').value || '';
-    const conf  = document.getElementById('confirm').value || '';
-
-    if (!name || !email || !pass || !conf) { toast('Preencha todos os campos.'); return; }
-    if (pass.length < 8) { toast('A senha deve ter pelo menos 8 caracteres.'); return; }
-    if (pass !== conf) { toast('As senhas não coincidem.'); return; }
-
-    const users = JSON.parse(localStorage.getItem('ldk_users') || '[]');
-    if (users.some(u => u.email === email)) {
-      toast('Este e-mail já está cadastrado.');
-      return;
-    }
-
-    users.push({ name, email, password: pass });
-    localStorage.setItem('ldk_users', JSON.stringify(users));
-    localStorage.setItem('ldk_current_user', JSON.stringify({ name, email }));
-
-    toast('Conta criada com sucesso!');
-    setTimeout(()=>location.href = 'Pag01.html', 700);
-  });
-</script>
 
 <footer class="footer">
   <div class="container cols">
@@ -134,21 +74,16 @@
       <a href="index.html">Entrar</a>
     </div>
     <div>
-  <strong>Contato</strong>
-  <ul class="contact-list">
-    <li class="contact">
-      <img src="assets/img/icone_gmail.png" alt="" aria-hidden="true">
-      <span>contato@livrariadoke.com</span>
-    </li>
-    <li class="contact">
-      <img src="assets/img/icone_whats.png" alt="" aria-hidden="true">
-      <span>(00) 00000-0000</span>
-    </li>
-  </ul>
-</div>
+      <strong>Contato</strong>
+      <ul class="contact-list">
+        <li class="contact"><img src="assets/img/icone_whats.jpg" alt="WhatsApp"> (00) 00000-0000</li>
+        <li class="contact"><img src="assets/img/icone_gmail.png" alt="E-mail"> contato@livrariadoke.com</li>
+      </ul>
+    </div>
   </div>
 </footer>
 <div class="toast" role="status" aria-live="polite"></div>
 
+<script src="java.js" defer></script>
 </body>
 </html>

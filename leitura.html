@@ -40,11 +40,11 @@
       <a href="Pag01.html">Início</a>
       <a href="Catalogo.html">Catálogo</a>
       <a href="sobre.html">Sobre</a>
-      <a href="index.html" id="link-entrar">Entrar</a> <!-- será oculto se logado -->
+      <a href="index.html">Entrar</a>
     </div>
-    <!-- NOVO: área para nome do usuário / explorar / sair -->
-    <div class="nav-cta" id="user-area">
-      <a class="btn btn-outline" href="Catalogo.html">Explorar</a>
+    <div class="nav-cta">
+      <button class="btn theme-toggle" id="theme-toggle" title="Alternar tema">🌙</button>
+      <div id="user-area"></div>
     </div>
   </nav>
 </header>
@@ -61,11 +61,6 @@
         <div class="reader-actions">
           <button class="btn" id="focus-toggle" title="Modo foco (F)">Modo foco</button>
           <button class="btn" id="wide-toggle" title="Largura cheia (W)">Largura cheia</button>
-          <div class="ctrl" style="display:inline-flex; gap:.25rem">
-            <button class="btn" id="theme-light"  title="Claro">Claro</button>
-            <button class="btn" id="theme-dark"   title="Escuro">Escuro</button>
-            <button class="btn" id="theme-sepia"  title="Sépia">Sépia</button>
-          </div>
           <a class="btn btn-outline" id="download-link" href="#" download>Baixar PDF</a>
           <a class="btn" id="newtab-link" href="#" target="_blank" rel="noopener">Abrir em nova aba</a>
         </div>
@@ -99,57 +94,20 @@
       <a href="index.html">Entrar</a>
     </div>
     <div>
-  <strong>Contato</strong>
-  <ul class="contact-list">
-    <li class="contact">
-      <img src="assets/img/icone_gmail.png" alt="" aria-hidden="true">
-      <span>contato@livrariadoke.com</span>
-    </li>
-    <li class="contact">
-      <img src="assets/img/icone_whats.png" alt="" aria-hidden="true">
-      <span>(00) 00000-0000</span>
-    </li>
-  </ul>
-</div>
+      <strong>Contato</strong>
+      <ul class="contact-list">
+        <li class="contact"><img src="assets/img/icone_whats.jpg" alt="WhatsApp"> (00) 00000-0000</li>
+        <li class="contact"><img src="assets/img/icone_gmail.png" alt="E-mail"> contato@livrariadoke.com</li>
+      </ul>
+    </div>
   </div>
 </footer>
 
+<div class="toast" role="status" aria-live="polite"></div>
+<script src="java.js" defer></script>
 <script type="module">
   import { BOOKS } from './js/books.js';
 
-  /* === NOME DO USUÁRIO NO TOPO === */
-  const userArea   = document.getElementById('user-area');
-  const linkEntrar = document.getElementById('link-entrar');
-  const current    = JSON.parse(localStorage.getItem('ldk_current_user') || 'null');
-
-  if (current && (current.name || current.email)) {
-    if (linkEntrar) linkEntrar.style.display = 'none';
-    const firstName = (current.name || current.email).split(' ')[0];
-
-    const hello = document.createElement('span');
-    hello.className = 'chip';
-    hello.textContent = `Olá, ${firstName}`;
-
-    const explorar = document.createElement('a');
-    explorar.className = 'btn';
-    explorar.href = 'Catalogo.html';
-    explorar.textContent = 'Explorar';
-
-    const logout = document.createElement('button');
-    logout.className = 'btn btn-outline';
-    logout.type = 'button';
-    logout.textContent = 'Sair';
-    logout.addEventListener('click', () => {
-      localStorage.removeItem('ldk_current_user');
-      location.reload();
-    });
-
-    userArea.innerHTML = '';
-    userArea.append(hello, explorar, logout);
-  }
-  /* === /NOME DO USUÁRIO === */
-
-  // util: aceita 'senhora.pdf' OU 'assets/books/senhora.pdf'
   function normalizePath(file) {
     const hasDir = /[\\/]/.test(file);
     const base = hasDir ? file : `assets/books/${file}`;
@@ -157,10 +115,6 @@
     parts[parts.length - 1] = encodeURIComponent(parts[parts.length - 1]);
     return parts.join('/');
   }
-
-  const burger = document.getElementById('burger');
-  const links  = document.querySelector('.nav-links');
-  burger?.addEventListener('click', () => links.classList.toggle('show'));
 
   const params = new URLSearchParams(location.search);
   const id = params.get('id');
@@ -180,54 +134,24 @@
   } else {
     titleEl.textContent = book.title;
     metaEl.textContent  = `${book.author}${book.genres ? ' • ' + book.genres.join(' • ') : ''}`;
-
     const path = normalizePath(book.file);
     frame.src = `${path}#toolbar=0&navpanes=0&view=FitH`;
     dlLink.href  = path;
     dlLink.setAttribute('download', `${book.title}.pdf`);
     tabLink.href = path;
-
     document.title = `${book.title} — Leitura • Livraria do Ke`;
   }
 
-  // Modo foco (F)
-  const focusBtn = document.getElementById('focus-toggle');
-  focusBtn.addEventListener('click', () => {
+  document.getElementById('focus-toggle').addEventListener('click', () => {
     document.body.classList.toggle('is-focus');
   });
-  document.addEventListener('keydown', (e) => {
-    if (e.key.toLowerCase() === 'f') focusBtn.click();
-  });
+  document.addEventListener('keydown', (e) => { if (e.key.toLowerCase() === 'f') document.getElementById('focus-toggle').click(); });
 
-  // Largura cheia (W)
-  const wideBtn = document.getElementById('wide-toggle');
-  wideBtn.addEventListener('click', () => {
+  document.getElementById('wide-toggle').addEventListener('click', () => {
     shell.classList.toggle('is-wide');
   });
-  document.addEventListener('keydown', (e) => {
-    if (e.key.toLowerCase() === 'w') wideBtn.click();
-  });
-
-  // Temas do leitor (persistidos)
-  const themeBtns = {
-    light: document.getElementById('theme-light'),
-    dark:  document.getElementById('theme-dark'),
-    sepia: document.getElementById('theme-sepia'),
-  };
-
-  function applyTheme(name){
-    shell.classList.remove('theme-dark','theme-sepia','theme-night');
-    if (name === 'dark')  shell.classList.add('theme-dark');
-    if (name === 'sepia') shell.classList.add('theme-sepia');
-    localStorage.setItem('readerTheme', name);
-  }
-
-  themeBtns.light.addEventListener('click', () => applyTheme('light'));
-  themeBtns.dark .addEventListener('click', () => applyTheme('dark'));
-  themeBtns.sepia.addEventListener('click', () => applyTheme('sepia'));
-
-  // restaura tema salvo
-  applyTheme(localStorage.getItem('readerTheme') || 'light');
+  document.addEventListener('keydown', (e) => { if (e.key.toLowerCase() === 'w') document.getElementById('wide-toggle').click(); });
 </script>
+
 </body>
 </html>

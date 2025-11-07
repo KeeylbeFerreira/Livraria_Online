@@ -4,7 +4,7 @@ export const BOOKS = [
     id: "dom-casmurro",
     title: "Dom Casmurro",
     author: "Machado de Assis",
-    file: "dom-casmurro.pdf", // em assets/books/
+    file: "dom-casmurro.pdf",
     cover: "assets/capa_livros/capa_domcasmurro.jpg",
     genres: ["Romance", "Clássico"]
   },
@@ -41,13 +41,12 @@ export const BOOKS = [
     genres: ["Romance", "Indianista", "Clássico"]
   },
 
-  // ===== Novos livros com capas =====
   {
     id: "o-alienista",
     title: "O Alienista",
     author: "Machado de Assis",
     file: "O-Alienista.pdf",
-    cover: "assets/capa_livros/capa_alineista.PNG", // atenção ao nome do arquivo (.PNG)
+    cover: "assets/capa_livros/capa_alineista.PNG",
     genres: ["Ficção", "Clássico Brasileiro", "Sátira"]
   },
   {
