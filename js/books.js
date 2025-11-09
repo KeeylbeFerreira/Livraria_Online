@@ -72,6 +72,34 @@ export const BOOKS = [
     file: "sertanejo.pdf",
     cover: "assets/capa_livros/capa_sertanejo.PNG",
     genres: ["Romance", "Clássico Brasileiro", "Regionalismo"]
+  },
+
+  // =========================
+  // NOVOS LIVROS (Infantil)
+  // =========================
+  {
+    id: "cordel-ludocriarte",
+    title: "Nosso Pé de Cordel Encantado",
+    author: "Ponto de Cultura LUDOCRIARTE (org.)",
+    file: "Livro-de-Cordel-Ludocriarte.pdf",            // coloque em assets/books/
+    cover: "assets/capa_livros/capa_ludocriarte.PNG",  // coloque em assets/capa_livros/
+    genres: ["Infantil", "Cordel", "Poesia"]
+  },
+  {
+    id: "o-dia-em-que-o-mundo-parou",
+    title: "O Dia em que o Mundo Parou",
+    author: "Barbie Furtado",
+    file: "o-dia-em-que-o-mundo-parou.pdf",
+    cover: "assets/capa_livros/capa_o_dia_que_o_mundo_parou.PNG",
+    genres: ["Infantil", "Ilustrado"]
+  },
+  {
+    id: "o-menino-maluquinho",
+    title: "O Menino Maluquinho",
+    author: "Ziraldo",
+    file: "Menino-maluquinho.pdf",
+    cover: "assets/capa_livros/capa-menino_maluquinho.PNG",
+    genres: ["Infantil", "Clássico Brasileiro", "Ilustrado"]
   }
 ];
 
