@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <style>
+    /* altura do iframe padrão (fallback) */
     .pdf-frame{
       width:100%; height:82vh;
       border:1px solid #e6e8ef; border-radius:12px; background:#fff;
@@ -43,25 +44,9 @@
       <a href="index.html">Entrar</a>
     </div>
     <div class="nav-cta">
-      <button id="theme-toggle" class="btn btn-icon" aria-label="Ativar tema escuro" title="Alternar tema">
-  <!-- Lua (mostra no tema claro) -->
-  <svg class="icon icon-moon" viewBox="0 0 24 24" aria-hidden="true">
-    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
-  </svg>
-  <!-- Sol (mostra no tema escuro) -->
-  <svg class="icon icon-sun" viewBox="0 0 24 24" aria-hidden="true" hidden>
-    <circle cx="12" cy="12" r="5"/>
-    <line x1="12" y1="1"  x2="12" y2="3"/>
-    <line x1="12" y1="21" x2="12" y2="23"/>
-    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-    <line x1="1" y1="12" x2="3" y2="12"/>
-    <line x1="21" y1="12" x2="23" y2="12"/>
-    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-    <line x1="18.36" y1="5.64"  x2="19.78" y2="4.22"/>
-  </svg>
-</button>
-
+      <button id="theme-toggle" class="btn btn-icon" aria-label="Alternar tema" title="Alternar tema">
+        <!-- ícone será injetado via JS -->
+      </button>
       <div id="user-area"></div>
     </div>
   </nav>
@@ -79,11 +64,49 @@
         <div class="reader-actions">
           <button class="btn" id="focus-toggle" title="Modo foco (F)">Modo foco</button>
           <button class="btn" id="wide-toggle" title="Largura cheia (W)">Largura cheia</button>
+          <button class="btn" id="pro-toggle" title="Leitor Pro (duas páginas)">Leitor Pro</button>
           <a class="btn btn-outline" id="download-link" href="#" download>Baixar PDF</a>
           <a class="btn" id="newtab-link" href="#" target="_blank" rel="noopener">Abrir em nova aba</a>
         </div>
       </div>
 
+      <!-- ===== Spread Viewer Pro (duas páginas) ===== -->
+      <div id="pro-loading" class="pro-loading" hidden>Carregando páginas…</div>
+
+      <div id="pro-viewer" class="pro-viewer" hidden>
+        <div class="pro-controls">
+          <button class="btn btn-ghost" id="pro-prev" aria-label="Página anterior">‹</button>
+
+          <div class="pro-pager">
+            <span id="pro-current">—</span>
+            <span class="sep">/</span>
+            <span id="pro-total">—</span>
+          </div>
+
+          <button class="btn btn-ghost" id="pro-next" aria-label="Próxima página">›</button>
+
+          <div class="pro-gap"></div>
+
+          <button class="btn btn-ghost" id="pro-zoom-out" title="Diminuir zoom">–</button>
+          <button class="btn btn-ghost" id="pro-zoom-in"  title="Aumentar zoom">+</button>
+          <button class="btn btn-ghost" id="pro-fit"      title="Ajuste: Altura/Largura">
+            Ajuste: <strong id="pro-fit-label">Altura</strong>
+          </button>
+          <button class="btn btn-ghost" id="pro-mode"     title="Uma/duas páginas">Duas páginas</button>
+        </div>
+
+        <div class="pro-stage" id="pro-stage">
+          <div class="page left">
+            <canvas id="pro-left"></canvas>
+          </div>
+          <div class="gutter" aria-hidden="true"></div>
+          <div class="page right">
+            <canvas id="pro-right"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== Fallback: iframe padrão ===== -->
       <div class="reader-body" style="grid-template-columns: 1fr; max-width: 1120px; margin: 0 auto;">
         <section class="reader-main">
           <div style="margin-top:.75rem">
@@ -122,11 +145,18 @@
 </footer>
 
 <div class="toast" role="status" aria-live="polite"></div>
+
+<!-- Seu JS global -->
 <script src="js/java.js" defer></script>
 
+<!-- pdf.js (CDN) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+<!-- Módulo desta página -->
 <script type="module">
   import { BOOKS } from './js/books.js';
 
+  // Normaliza caminho do PDF
   function normalizePath(file) {
     const hasDir = /[\\/]/.test(file);
     const base = hasDir ? file : `assets/books/${file}`;
@@ -135,9 +165,9 @@
     return parts.join('/');
   }
 
-  const params = new URLSearchParams(location.search);
-  const id = params.get('id');
-
+  // Carrega dados do livro
+  const params  = new URLSearchParams(location.search);
+  const id      = params.get('id');
   const titleEl = document.getElementById('book-title');
   const metaEl  = document.getElementById('book-meta');
   const frame   = document.getElementById('pdf');
@@ -146,6 +176,7 @@
   const shell   = document.getElementById('reader-shell');
 
   const book = BOOKS.find(b => b.id === id);
+  let pdfPath = null;
 
   if (!book) {
     titleEl.textContent = 'Livro não encontrado';
@@ -153,14 +184,15 @@
   } else {
     titleEl.textContent = book.title;
     metaEl.textContent  = `${book.author}${book.genres ? ' • ' + book.genres.join(' • ') : ''}`;
-    const path = normalizePath(book.file);
-    frame.src = `${path}#toolbar=0&navpanes=0&view=FitH`;
-    dlLink.href  = path;
+    pdfPath = normalizePath(book.file);
+    frame.src = `${pdfPath}#toolbar=0&navpanes=0&view=FitH`;
+    dlLink.href  = pdfPath;
     dlLink.setAttribute('download', `${book.title}.pdf`);
-    tabLink.href = path;
+    tabLink.href = pdfPath;
     document.title = `${book.title} — Leitura • Livraria do Ke`;
   }
 
+  // Foco e largura
   document.getElementById('focus-toggle').addEventListener('click', () => {
     document.body.classList.toggle('is-focus');
   });
@@ -170,6 +202,174 @@
     shell.classList.toggle('is-wide');
   });
   document.addEventListener('keydown', (e) => { if (e.key.toLowerCase() === 'w') document.getElementById('wide-toggle').click(); });
+
+  /* =====================================================================
+     Spread Viewer Pro (duas páginas) com pdf.js
+     ===================================================================== */
+  const pdfjsLib = window['pdfjsLib'];
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+  const proBtn      = document.getElementById('pro-toggle');
+  const proWrap     = document.getElementById('pro-viewer');
+  const proLoad     = document.getElementById('pro-loading');
+  const proStage    = document.getElementById('pro-stage');
+  const cvsLeft     = document.getElementById('pro-left');
+  const cvsRight    = document.getElementById('pro-right');
+  const btnPrev     = document.getElementById('pro-prev');
+  const btnNext     = document.getElementById('pro-next');
+  const btnZoomIn   = document.getElementById('pro-zoom-in');
+  const btnZoomOut  = document.getElementById('pro-zoom-out');
+  const btnFit      = document.getElementById('pro-fit');
+  const btnMode     = document.getElementById('pro-mode');
+  const lblFit      = document.getElementById('pro-fit-label');
+  const lblCur      = document.getElementById('pro-current');
+  const lblTot      = document.getElementById('pro-total');
+
+  let pdfDoc = null, total = 0;
+  let pageIndex = 1;
+  let spread = true;           // duas páginas
+  let fitMode = 'height';      // 'height' | 'width'
+  let zoom = 1;                // 0.5 .. 3
+
+  function isActive(){ return !proWrap.hasAttribute('hidden'); }
+  function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
+
+  async function enablePro(){
+    if (!pdfPath) return;
+    frame.hidden = true;
+    proWrap.hidden = false;
+    proBtn.textContent = 'Sair do Leitor Pro';
+
+    if (pdfDoc) { await render(); return; }
+
+    try{
+      proLoad.hidden = false;
+      const task = pdfjsLib.getDocument(pdfPath);
+      pdfDoc = await task.promise;
+      total  = pdfDoc.numPages;
+      lblTot.textContent = total;
+      pageIndex = clamp(pageIndex, 1, total);
+      await render();
+    } finally {
+      proLoad.hidden = true;
+    }
+  }
+  function disablePro(){
+    proWrap.hidden = true;
+    frame.hidden = false;
+    proBtn.textContent = 'Leitor Pro';
+  }
+
+  async function getPage(num){ return pdfDoc.getPage(num); }
+
+  function computeScale(vp, availW, availH){
+    const s = (fitMode === 'width')
+      ? (availW / vp.width)
+      : (availH / vp.height);
+    return s * zoom;
+  }
+
+  async function renderCanvas(pageNum, canvas, availW, availH){
+    const ctx = canvas.getContext('2d');
+    if (!pageNum){ canvas.width = canvas.height = 20; ctx.clearRect(0,0,20,20); return; }
+    const page = await getPage(pageNum);
+    const vp1  = page.getViewport({ scale: 1 });
+    const scale = computeScale(vp1, availW, availH);
+    const vp   = page.getViewport({ scale });
+    const dpr  = (window.devicePixelRatio || 1);
+
+    canvas.width  = Math.floor(vp.width  * dpr);
+    canvas.height = Math.floor(vp.height * dpr);
+    canvas.style.width  = Math.floor(vp.width)  + 'px';
+    canvas.style.height = Math.floor(vp.height) + 'px';
+
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    await page.render({ canvasContext: ctx, viewport: vp }).promise;
+  }
+
+  function currentSpread(){
+    if (!spread) return { left: null, right: pageIndex };
+    if (pageIndex === 1) return { left: null, right: 1 }; // capa sozinha
+    const left = pageIndex % 2 === 0 ? pageIndex : pageIndex - 1;
+    const right = left + 1 <= total ? left + 1 : null;
+    return { left, right };
+  }
+
+  async function render(){
+    if (!pdfDoc) return;
+    proStage.classList.add('fade');
+    const availW = proStage.clientWidth / (spread ? 2 : 1) - 24;
+    const availH = proStage.clientHeight - 16;
+
+    const { left, right } = currentSpread();
+
+    await Promise.all([
+      renderCanvas(left,  cvsLeft,  availW, availH),
+      renderCanvas(right, cvsRight, availW, availH),
+    ]);
+
+    lblCur.textContent = String(right ?? left ?? pageIndex);
+    setTimeout(()=> proStage.classList.remove('fade'), 120);
+  }
+
+  function smartResize(){
+    if (isActive() && pdfDoc) render();
+  }
+
+  // Navegação
+  btnPrev.addEventListener('click', () => {
+    if (!pdfDoc) return;
+    if (spread) {
+      pageIndex = clamp(pageIndex - 2, 1, total);
+      if (pageIndex === 2) pageIndex = 1;
+    } else {
+      pageIndex = clamp(pageIndex - 1, 1, total);
+    }
+    render();
+  });
+  btnNext.addEventListener('click', () => {
+    if (!pdfDoc) return;
+    if (spread) {
+      pageIndex = clamp(pageIndex + 2, 1, total);
+    } else {
+      pageIndex = clamp(pageIndex + 1, 1, total);
+    }
+    render();
+  });
+
+  btnZoomIn.addEventListener('click', () => { zoom = clamp(zoom + 0.1, .5, 3); render(); });
+  btnZoomOut.addEventListener('click',()=> { zoom = clamp(zoom - 0.1, .5, 3); render(); });
+
+  btnFit.addEventListener('click', () => {
+    fitMode = (fitMode === 'height') ? 'width' : 'height';
+    lblFit.textContent = (fitMode === 'height') ? 'Altura' : 'Largura';
+    render();
+  });
+
+  btnMode.addEventListener('click', () => {
+    spread = !spread;
+    btnMode.textContent = spread ? 'Duas páginas' : 'Uma página';
+    render();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (!isActive()) return;
+    if (e.key === 'ArrowLeft')  btnPrev.click();
+    if (e.key === 'ArrowRight') btnNext.click();
+    if (e.key === '+')          btnZoomIn.click();
+    if (e.key === '-')          btnZoomOut.click();
+    if (e.key.toLowerCase() === 'h') btnFit.click();
+    if (e.key.toLowerCase() === 'p') btnMode.click();
+  });
+  window.addEventListener('resize', () => {
+    clearTimeout(window.__pro_t);
+    window.__pro_t = setTimeout(smartResize, 120);
+  });
+
+  document.getElementById('pro-toggle').addEventListener('click', () => {
+    isActive() ? disablePro() : enablePro();
+  });
 </script>
 
 </body>

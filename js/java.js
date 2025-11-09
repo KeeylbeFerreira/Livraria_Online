@@ -2,16 +2,42 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log('[Livraria do Ke] JS carregado.');
 
   /* ===========================
-     NAV MOBILE
+     HELPERS
   ============================ */
-  const burger = document.querySelector('.burger');
-  const links  = document.querySelector('.nav-links');
-  if (burger && links) burger.addEventListener('click', () => links.classList.toggle('show'));
+  const $  = (sel, el=document) => el.querySelector(sel);
+  const $$ = (sel, el=document) => [...el.querySelectorAll(sel)];
+
+  /* ===========================
+     NAV MOBILE (acessível)
+  ============================ */
+  const burger = $('.burger');
+  const links  = $('.nav-links');
+
+  if (burger && links) {
+    burger.setAttribute('aria-expanded', 'false');
+
+    const toggleNav = (force) => {
+      const willShow = typeof force === 'boolean' ? force : !links.classList.contains('show');
+      links.classList.toggle('show', willShow);
+      burger.setAttribute('aria-expanded', String(willShow));
+      document.body.classList.toggle('nav-open', willShow);
+    };
+
+    burger.addEventListener('click', () => toggleNav());
+    // fecha ao clicar em um link
+    links.addEventListener('click', (e) => {
+      if (e.target.tagName === 'A') toggleNav(false);
+    });
+    // fecha com ESC
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') toggleNav(false);
+    });
+  }
 
   /* ===========================
      TOGGLE SENHA
   ============================ */
-  document.querySelectorAll('[data-toggle="password"]').forEach((btn) => {
+  $$('[data-toggle="password"]').forEach((btn) => {
     btn.addEventListener('click', () => {
       const id = btn.getAttribute('data-target');
       const input = document.getElementById(id);
@@ -22,10 +48,11 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ===========================
-     TOAST
+     TOAST (com proteção anti-spam)
   ============================ */
+  let toastTimer = null;
   const toast = (msg) => {
-    let el = document.querySelector('.toast');
+    let el = $('.toast');
     if (!el) {
       el = document.createElement('div');
       el.className = 'toast';
@@ -33,11 +60,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     el.textContent = msg;
     el.classList.add('show');
-    setTimeout(() => el.classList.remove('show'), 2500);
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), 2500);
   };
+  // opcional: expõe global p/ usar em outros módulos
+  window._toast = toast;
 
   /* ===========================
-     THEME (global, persistente) — ícones minimalistas
+     THEME (persistente + acessível)
+     - Respeita o tema do sistema se o usuário nunca escolheu
+     - Ícone minimalista (sol/lua)
+     - Atalho T para alternar
   ============================ */
   const THEME_KEY = 'ldk_theme';
   const root = document.documentElement;
@@ -63,45 +96,58 @@ document.addEventListener('DOMContentLoaded', () => {
         fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
 </svg>`;
 
-  function getInitialTheme() {
-    const saved = localStorage.getItem(THEME_KEY);
-    if (saved === 'dark' || saved === 'light') return saved;
-    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    return prefersDark ? 'dark' : 'light';
-  }
-
   const themeBtn = document.getElementById('theme-toggle');
+  const prefersQuery = window.matchMedia?.('(prefers-color-scheme: dark)');
 
-  function refreshThemeUI() {
+  const refreshThemeUI = () => {
     if (!themeBtn) return;
     const isDark = root.getAttribute('data-theme') === 'dark';
     themeBtn.innerHTML = isDark ? ICON_SUN : ICON_MOON;
     themeBtn.setAttribute('aria-label', isDark ? 'Mudar para modo claro' : 'Mudar para modo escuro');
     themeBtn.setAttribute('title', isDark ? 'Claro' : 'Escuro');
-  }
+  };
 
-  function setTheme(mode) {
+  const applyTheme = (mode, { persist = false } = {}) => {
     if (mode === 'dark') root.setAttribute('data-theme', 'dark');
     else root.removeAttribute('data-theme');
-    localStorage.setItem(THEME_KEY, mode);
+    if (persist) localStorage.setItem(THEME_KEY, mode);
     refreshThemeUI();
-  }
+  };
 
-  setTheme(getInitialTheme());
+  // inicialização: usa salvo; senão, segue o sistema (sem persistir)
+  const savedTheme = localStorage.getItem(THEME_KEY);
+  if (savedTheme === 'light' || savedTheme === 'dark') {
+    applyTheme(savedTheme, { persist: false });
+  } else {
+    const systemDark = !!prefersQuery?.matches;
+    applyTheme(systemDark ? 'dark' : 'light', { persist: false });
+    // se o usuário nunca escolheu, reagimos às mudanças do sistema
+    prefersQuery?.addEventListener?.('change', (e) => {
+      const stillNoChoice = !localStorage.getItem(THEME_KEY);
+      if (stillNoChoice) applyTheme(e.matches ? 'dark' : 'light', { persist: false });
+    });
+  }
 
   if (themeBtn) {
     themeBtn.addEventListener('click', () => {
       const isDark = root.getAttribute('data-theme') === 'dark';
-      setTheme(isDark ? 'light' : 'dark');
+      applyTheme(isDark ? 'light' : 'dark', { persist: true });
     });
   }
+  // Atalho: T alterna o tema
+  document.addEventListener('keydown', (e) => {
+    if (e.key?.toLowerCase() === 't' && !/input|textarea|select/i.test(e.target.tagName)) {
+      const isDark = root.getAttribute('data-theme') === 'dark';
+      applyTheme(isDark ? 'light' : 'dark', { persist: true });
+    }
+  });
 
   /* ===========================
      ÁREA DO USUÁRIO NO TOPO
   ============================ */
   (function renderUserArea() {
-    const userArea = document.getElementById('user-area');
-    const topLogin = document.querySelector('.nav-links a[href="index.html"]'); // "Entrar"
+    const userArea = $('#user-area');
+    const topLogin = $('.nav-links a[href="index.html"]'); // "Entrar"
     const current = JSON.parse(localStorage.getItem('ldk_current_user') || 'null');
 
     if (!userArea) return;
@@ -149,13 +195,16 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ===========================
      LOGIN (index.html)
   ============================ */
-  const loginForm = document.getElementById('login-form');
+  const loginForm = $('#login-form');
   if (loginForm) {
     loginForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const email = loginForm.querySelector('#email').value.trim().toLowerCase();
       const pass  = loginForm.querySelector('#password').value.trim();
+
       if (!email || !pass) { toast('Preencha email e senha.'); return; }
+      // validação simples de e-mail
+      if (!/^\S+@\S+\.\S+$/.test(email)) { toast('Informe um e-mail válido.'); return; }
 
       const users = JSON.parse(localStorage.getItem('ldk_users') || '[]');
       const ok = users.find(u => u.email.toLowerCase() === email && u.password === pass);
@@ -173,7 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ===========================
      CADASTRO (cadastro.html)
   ============================ */
-  const signupForm = document.getElementById('signup-form');
+  const signupForm = $('#signup-form');
   if (signupForm) {
     signupForm.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -182,6 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const pass  = signupForm.querySelector('#password').value.trim();
 
       if (!name || !email || !pass) { toast('Preencha todos os campos.'); return; }
+      if (!/^\S+@\S+\.\S+$/.test(email)) { toast('Informe um e-mail válido.'); return; }
       if (pass.length < 8) { toast('A senha deve ter pelo menos 8 caracteres.'); return; }
 
       const users = JSON.parse(localStorage.getItem('ldk_users') || '[]');
