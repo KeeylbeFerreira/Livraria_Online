@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
       applyTheme(isDark ? 'light' : 'dark', { persist: true });
     });
   }
-  // Atalho: T alterna o tema
+  // Atalho: T alterna o tema (fora de inputs)
   document.addEventListener('keydown', (e) => {
     if (e.key?.toLowerCase() === 't' && !/input|textarea|select/i.test(e.target.tagName)) {
       const isDark = root.getAttribute('data-theme') === 'dark';
@@ -244,4 +244,59 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => location.href = 'Pag01.html', 700);
     });
   }
+
+  /* ===========================
+     CONTINUAR LENDO (Home)
+     - Lê o último progresso salvo em localStorage ("lk:lastReading")
+     - Renderiza um card em #continue-reading
+     - Estilos do card estão no style.css (.continue-card)
+  ============================ */
+  (function renderContinueReading(){
+    const mount = $('#continue-reading');
+    if (!mount) return;
+
+    const data = JSON.parse(localStorage.getItem('lk:lastReading') || 'null');
+    if (!data) {
+      mount.innerHTML = '<small class="form-hint">Você ainda não iniciou nenhuma leitura.</small>';
+      return;
+    }
+
+    const { id, title, author, cover, page, ts } = data;
+    const when = new Date(ts).toLocaleString();
+    const safeCover = cover || 'assets/img/placeholder-cover.png';
+    const pageInfo = page ? `Última página: ${page}` : 'Leitura em andamento';
+
+    mount.innerHTML = `
+      <article class="continue-card" role="region" aria-label="Continuar lendo">
+        <div class="media"><img src="${safeCover}" alt="Capa do livro ${title}"></div>
+        <div class="body">
+          <div class="card-title">Continuar lendo</div>
+          <div class="card-sub"><strong>${title || 'Livro'}</strong>${author ? ' — ' + author : ''}</div>
+          <small class="form-hint">${pageInfo} • ${when}</small>
+          <div class="actions">
+            <a class="btn btn-primary" href="leitura.html?id=${encodeURIComponent(id)}">Continuar</a>
+            <a class="btn" href="Catalogo.html">Trocar de livro</a>
+          </div>
+        </div>
+      </article>`;
+  })();
+
+  /* ===========================
+     (Opcional) Pré-salvar "entrada" ao clicar em Ler
+     - Caso o usuário clique em um link para leitura, gravamos um snapshot mínimo.
+     - O leitor (leitura.html) sobrescreve com dados completos e página atual.
+  ============================ */
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a[href^="leitura.html"]');
+    if (!a) return;
+    try {
+      const url = new URL(a.getAttribute('href'), location.href);
+      const id = url.searchParams.get('id');
+      if (!id) return;
+      const existing = JSON.parse(localStorage.getItem('lk:lastReading') || 'null') || {};
+      const snapshot = Object.assign({}, existing, { id, ts: Date.now() });
+      localStorage.setItem('lk:lastReading', JSON.stringify(snapshot));
+    } catch {}
+  });
+
 });

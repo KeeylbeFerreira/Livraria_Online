@@ -370,3 +370,25 @@ body.is-focus .pro-stage{ height:calc(100vh - 48px - 48px) } /* viewport – hea
 :root[data-theme="dark"] .gutter{ background:linear-gradient(90deg, rgba(255,255,255,.06), rgba(255,255,255,0), rgba(255,255,255,.06)) }
 :root[data-theme="dark"] .pro-stage .page{ background:linear-gradient(180deg,#141b33,#0f172a) }
 :root[data-theme="dark"] .pro-stage canvas{ box-shadow:0 14px 36px rgba(0,0,0,.55) }
+/* ===== Continuar lendo ===== */
+.continue-card{
+  display:grid; grid-template-columns: 160px 1fr; gap:1rem;
+  background:var(--card); border:1px solid #e6e8ef; border-radius:1rem;
+  overflow:hidden; box-shadow:0 8px 22px rgba(13,42,74,.07);
+}
+.continue-card .media{ background:#f0f3f8; aspect-ratio: 1 / 1; }
+.continue-card .media img{ width:100%; height:100%; object-fit:cover; }
+.continue-card .body{ padding:1rem; display:flex; flex-direction:column; gap:.45rem; }
+.continue-card .body .card-title{ font-weight:800; color:var(--navy); }
+.continue-card .body .card-sub{ color:var(--muted); }
+.continue-card .actions{ margin-top:.25rem; display:flex; gap:.5rem; flex-wrap:wrap; }
+
+@media (max-width: 600px){
+  .continue-card{ grid-template-columns: 1fr; }
+  .continue-card .media{ height:180px; aspect-ratio:auto; }
+}
+
+/* Dark */
+:root[data-theme="dark"] .continue-card{ border-color:#263150; background:#0f172a; }
+:root[data-theme="dark"] .continue-card .body .card-title{ color:#e5e7eb; }
+:root[data-theme="dark"] .continue-card .body .card-sub{ color:#aab1c4; }
