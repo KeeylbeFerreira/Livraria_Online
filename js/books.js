@@ -100,6 +100,35 @@ export const BOOKS = [
     file: "Menino-maluquinho.pdf",
     cover: "assets/capa_livros/capa-menino_maluquinho.PNG",
     genres: ["Infantil", "Clássico Brasileiro", "Ilustrado"]
+  },
+
+  // ============================================
+  // NOVOS TÍTULOS (Público domínio / HQ)
+  // ============================================
+  {
+    id: "fabulas-de-esopo",
+    title: "Fábulas de Esopo",
+    author: "Esopo",
+    file: "fabulas_de_esopo.pdf",                       // coloque em assets/books/
+    cover: "assets/capa_livros/capa_fabulo_de_esopo.PNG", // coloque em assets/capa_livros/
+    genres: ["Infantil", "Fábulas", "Clássico"]
+  },
+  {
+    id: "mafalda-parte1",
+    title: "As tiras da Mafalda — 1ª Parte",
+    author: "Quino",
+    // Dica: se possível, renomeie o arquivo para evitar acentos, ex.: "mafalda-parte-1.pdf"
+    file: "As_tiras_da_Mafalda_-_1ª_Parte.pdf",        // coloque em assets/books/
+    cover: "assets/capa_livros/capa_mafalda.PNG",      // coloque em assets/capa_livros/
+    genres: ["HQ", "Tiras", "Humor"]
+  },
+  {
+    id: "os-pobres",
+    title: "Os Pobres",
+    author: "Raul Brandão",
+    file: "os-pobres.pdf",                              // coloque em assets/books/
+    cover: "assets/capa_livros/capa_os_pobres.PNG",     // coloque em assets/capa_livros/
+    genres: ["Romance", "Clássico", "Realismo"]
   }
 ];
 
