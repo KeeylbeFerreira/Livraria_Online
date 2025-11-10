@@ -1,156 +1,167 @@
 # 📚 Livraria do Ke — Catálogo e Leitor de Livros (HTML/CSS/JS)
 
-Projeto front‑end estático de uma livraria/estante digital com **catálogo filtrável**, **autenticação didática via `localStorage`**, **modo escuro** e **leitor de PDF** com foco em conforto visual.
+Projeto front-end estático de uma livraria/estante digital com **catálogo filtrável**, **autenticação didática via `localStorage`**, **modo escuro** e **leitor de PDF** com foco em conforto visual.
 
-> Feito para estudos/portfólio. Sem back‑end real, sem coleta de dados. **Não use senhas reais.**
+> Feito para estudos/portfólio. Sem back-end real, sem coleta de dados. **Não use senhas reais.**
 
 ---
 
 ## ✨ Principais funcionalidades
 
 - **Home com busca rápida** para o catálogo (“Descubra seu próximo livro favorito”).  
-  Arquivo: `Pag01.html`.  
-- **Catálogo filtrável** por **título/autor** e por **chips de gêneros**, com geração de capa *fallback* em SVG quando a imagem não carrega.  
-  Arquivo: `Catalogo.html` + `js/books.js`.  
-- **Leitor de PDF** em `leitura.html` com:
-  - Botões **Modo foco** (`F`) e **Largura cheia** (`W`);
-  - Links para **Baixar PDF** e **Abrir em nova aba**;
-  - Cabeçalho com título, autor e gêneros.  
-- **Autenticação didática** (login/cadastro) usando `localStorage`, com **Perfil** para atualizar nome e senha (apenas no navegador).  
-  Arquivos: `index.html`, `cadastro.html` e `perfil.html`.  
-- **Tema claro/escuro** persistente (**`localStorage` + media query**), com botão fixo na navbar.  
-- **Acessibilidade de base**: landmarks, `aria-label` em buscas/menus, foco visível, `aria-current` em navegação.
-- **UI consistente** com **variáveis CSS** (navy + dourado) e **grid responsivo**.
+  Arquivo: `Pag01.html`.
+
+- **Catálogo filtrável** por **título/autor** e **chips de gêneros** (+ capa *fallback* SVG).  
+  Arquivos: `Catalogo.html` + `js/books.js`.
+
+- **Leitor de PDF** (`leitura.html`) com:
+  - **Leitor Pro (pdf.js)**: uma ou duas páginas lado a lado, **zoom ±**, **ajuste Altura/Largura**, **atalhos**:  
+    `←/→` navegação • `+/-` zoom • `H` alterna ajuste • `P` uma/duas páginas.  
+    Botão **Leitor Pro** para ativar/desativar.
+  - **Modo foco** (`F`) e **Largura cheia** (`W`);
+  - **Baixar PDF** e **Abrir em nova aba**;
+  - Cabeçalho com **título, autor e gêneros**.
+
+- **Autenticação didática** (login/cadastro) usando `localStorage`, com **Perfil** (nome/senha) local.  
+  Arquivos: `index.html`, `cadastro.html`, `perfil.html`.
+
+- **Proteção de rotas (client-side)**: **Catálogo, Leitura e Perfil** exigem login.  
+  *Como ativar:* adicione `data-requires-auth="true"` no `<body>` da página.
+
+- **Continuar lendo** (Home): card automático com o **último livro aberto** e **página salva** (`lk:lastReading`).  
+  Montagem em `#continue-reading` (exibe botão “Continuar”).
+
+- **Tema claro/escuro** persistente (`ldk_theme`) com respeito ao tema do sistema e **atalho `T`**.
+
+- **Navbar mobile acessível**: `aria-expanded`, fecha com `ESC`, bloqueio de rolagem quando aberto.
+
+- **Validações e UX**: e-mail válido, senha mínima (8), *toast* anti-spam, foco visível e landmarks ARIA.
 
 ---
 
 ## 🗂️ Estrutura do projeto
 
-```
 .
-├── Pag01.html          # Início (hero + destaques + busca que aponta para o Catálogo)
-├── Catalogo.html       # Catálogo com filtros (título/autor e chips de gêneros)
-├── leitura.html        # Leitor de PDF (iframe) com foco e largura cheia
-├── index.html          # Login
-├── cadastro.html       # Cadastro
-├── perfil.html         # Perfil do usuário (nome/senha/sessão)
-├── sobre.html          # Página institucional
-├── style.css           # Estilos globais (tokens/cores, componentes, dark mode)
-├── java.js             # Navbar, tema, toasts, auth (login/cadastro), user-area
-└── js/
-    └── books.js        # Catálogo de livros (id, título, autor, gêneros, capa, arquivo)
-```
-> As capas e PDFs devem ficar em `assets/capa_livros/` e `assets/books/` (ou ajuste os caminhos em `js/books.js`).
+├── Pag01.html # Início (hero + destaques + busca)
+├── Catalogo.html # Catálogo com filtros (proteção de rota)
+├── leitura.html # Leitor (iframe + Leitor Pro/pdf.js) ← proteção de rota
+├── index.html # Login
+├── cadastro.html # Cadastro
+├── perfil.html # Perfil do usuário ← proteção de rota
+├── sobre.html # Institucional
+├── style.css # Tokens/cores, componentes, dark mode, estilos do Leitor Pro
+├── js/
+│ ├── java.js # Navbar, tema, toasts, auth, proteção de rotas, “Continuar lendo”
+│ └── books.js # Catálogo (id, título, autor, gêneros, capa, arquivo)
+└── assets/
+├── books/ # PDFs
+└── capa_livros/ # Capas .png/.jpg
+
+markdown
+Copiar código
+
+> O **pdf.js** é carregado via CDN em `leitura.html` apenas quando o **Leitor Pro** é usado.
 
 ---
 
 ## ⚙️ Como rodar localmente
 
-1. Baixe/clon​e o repositório.
-2. Abra a pasta no VS Code (ou editor de preferência).
-3. Sirva a pasta com um servidor estático (ex.: **Live Server** do VS Code) **ou** abra `Pag01.html` no navegador.
-4. Navegue:
+1. Clone o repositório.
+2. Abra a pasta no VS Code.
+3. Use um servidor estático (ex.: **Live Server**) ou abra `Pag01.html`.
+4. Caminhos úteis:
    - Início: `Pag01.html`
    - Catálogo: `Catalogo.html`
    - Login/Cadastro: `index.html` / `cadastro.html`
    - Leitura: `leitura.html?id=<id-do-livro>`
 
-> Dica: para testar leitura, garanta que o PDF indicado em `js/books.js` exista em `assets/books/`.
+> Confirme que os PDFs apontados em `js/books.js` existem em `assets/books/`.
 
 ---
 
 ## 🧩 Detalhes técnicos
 
-- **Catálogo & busca**  
-  O estado de filtros (query e gênero) é refletido na URL (`?q=...&genre=...`). Renderização do grid é toda client‑side.
-- **Fallback de capa**  
-  Quando uma `cover` falta ou falha, uma **capa SVG** é gerada dinamicamente com **título** e **autor** (base64 no `src`).
-- **Autenticação didática**  
-  - Storage de usuários: `ldk_users`  
-  - Sessão: `ldk_current_user`  
-  - **Apenas para fins educacionais** (sem criptografia, sem backend).
-- **Tema claro/escuro**  
-  - Chave: `ldk_theme` (`light`/`dark`)  
-  - Botão `#theme-toggle` alterna o atributo `data-theme` no `:root`.
-- **Atalhos do leitor**  
-  - `F` → liga/desliga **Modo foco** (oculta header/footer e maximiza o leitor);  
-  - `W` → alterna **Largura cheia** do contêiner do leitor.
+### Catálogo & busca
+- Filtros por query (`?q=`) e gênero (`?genre=`) refletidos na URL.  
+- Capa *fallback* gerada em SVG (base64) quando a imagem falha.
 
----
+### Autenticação (didática)
+- Usuários: `ldk_users` • Sessão atual: `ldk_current_user`.
+- *Opcional*: cookie simples `ldk_auth=1` para uso futuro em middleware (ex.: Vercel).
 
-## 🧪 Como adicionar livros
+### Proteção de rotas
+- Páginas com `<body data-requires-auth="true">` redirecionam para `index.html?auth=1` se não houver sessão.
+- O link clicado é salvo em `sessionStorage (ldk_return_to)` e retomado após login.
 
-Edite `js/books.js` e inclua objetos no array `BOOKS`:
+```html
+<!-- exemplo -->
+<body data-requires-auth="true">
+Continuar lendo
+Progresso é salvo em localStorage na chave lk:lastReading:
 
-```js
+json
+Copiar código
+{ "id": "dom-casmurro", "title": "Dom Casmurro", "author": "Machado de Assis", "cover": "...", "page": 21, "ts": 1730... }
+A Home renderiza um card em #continue-reading com capa, título, última página e ação Continuar.
+
+Leitor Pro (pdf.js)
+Navegação: ←/→, Zoom: +/-, Ajuste: H, Modo: P.
+
+UI: pager, zoom, ajuste altura/largura, uma/duas páginas; fallback para iframe padrão.
+
+Tema
+ldk_theme (light/dark), alterna data-theme no :root, atalho T.
+
+🧪 Como adicionar livros
+Edite js/books.js e inclua um objeto em BOOKS:
+
+js
+Copiar código
 {
   id: "dom-casmurro",
   title: "Dom Casmurro",
   author: "Machado de Assis",
-  file: "dom-casmurro.pdf",          // caminho relativo ao projeto (ex.: assets/books/dom-casmurro.pdf)
+  file: "assets/books/dom-casmurro.pdf",   // pode ser só "dom-casmurro.pdf"
   cover: "assets/capa_livros/capa_domcasmurro.jpg",
   genres: ["Romance", "Clássico"]
 }
-```
-- **`file`**: pode ser apenas o nome do arquivo (será resolvido para `assets/books/<arquivo>`), ou um caminho já relativo.
-- **`genres`**: a lista de chips é criada automaticamente a partir de todos os gêneros definidos.
+Também adicionamos exemplos como Fábulas de Esopo, Mafalda (tiras), Os Pobres, O Menino Maluquinho etc. — confira os caminhos das capas/PDFs.
 
----
+🎨 Design system
+Paleta: Navy #0D2A4A, Dourado #D4AF37 (hover #b89126) + tons para claro/escuro.
 
-## 🎨 Design system (resumo)
+Componentes: Navbar sticky, Hero, Cards, Chips, Forms, Toast, Footer, Leitor Pro.
 
-- Paleta: **Navy** `#0D2A4A`, **Dourado** `#D4AF37` (hover `#b89126`), tons claros/escuros para texto e fundos.
-- Componentes prontos: **Navbar** com menu móvel, **Hero**, **Cards** de livro, **Chips**, **Forms**, **Toast**, **Footer**.
-- Responsividade: *breakpoints* móveis/tablet/desktop com grids `cols-2/3/4` e `@media` simples.
-- Acessibilidade: `aria-label` em buscas, `aria-current="page"` nos links ativos, contrastes em dark mode e foco com `box-shadow`.
+Responsividade: breakpoints 480/768/1024/1280, grids cols-2/3/4, tipografia Poppins/Merriweather.
 
----
+Acessibilidade: foco visível, aria-current, labels/landmarks.
 
-## 🚀 Deploy
+🚀 Deploy
+GitHub Pages: Branch main → pasta root.
 
-- **GitHub Pages** (estático): habilite Pages no repositório → Branch `main` → pasta `/ (root)`.
-- **Vercel/Netlify**: “Import Project” → selecione o repositório → *framework* “Other/Static” → deploy.
+Vercel/Netlify: import como Static Site.
+(Opcional) Crie um rewrite para mapear / → Pag01.html.
 
-URLs de entrada sugeridas:
-- `Pag01.html` como **home**; mapeie `/` para `Pag01.html` se sua plataforma permitir *rewrite*.
+🔐 Avisos
+Projeto didático: não armazene dados sensíveis nem use senhas reais.
 
----
+Garanta que os PDFs tenham licença adequada (domínio público ou autorização).
 
-## 🔐 Avisos de uso e direitos
+🛣️ Roadmap
+Paginação/lazy no catálogo
 
-- Este projeto é **didático**. Não armazene informações sensíveis nem reutilize senhas reais.
-- Confirme que **os PDFs adicionados** estão em **domínio público** ou possuem **licença** compatível com redistribuição.
-- Marcas, imagens e nomes são usados apenas para fins educacionais.
+PWA com cache offline
 
----
+Marcar páginas lidas por livro e sincronizar em backend real
 
-## 🛣️ Roadmap (sugestões)
+Biblioteca do usuário (favoritos / lidos)
 
-- Paginação e/ou *lazy‑loading* no catálogo
-- Indicadores de leitura contínua (ex.: salvar página/posição)
-- Busca por autor/gênero em *hash* navegável
-- PWA (*offline* básico com Service Worker)
-- Backend real (cadastro/login com hash de senhas) e biblioteca do usuário
-- Indicadores de acessibilidade (salt links, melhor rota de foco)
+🧑‍💻 Tecnologias
+HTML5, CSS3 (tokens/utilitários, dark mode), JavaScript (ESM), localStorage, pdf.js (CDN).
 
----
+🙌 Créditos
+UI/UX & Dev: Keeylb Santos
+Projeto educacional — ADS
 
-## 🧑‍💻 Tecnologias
-
-- **HTML5**, **CSS3** (variáveis/tokens, responsivo), **JavaScript** (ES Modules)
-- **localStorage** para prototipagem de autenticação
-- **iFrame** como leitor de PDF
-
----
-
-## 🙌 Créditos
-
-**UI/UX & Dev:** Keeylb Santos  
-**Projeto educacional** — Análise e Desenvolvimento de Sistemas (ADS)
-
----
-
-## 📄 Licença
-
-Este repositório é disponibilizado sob a **MIT License** (exceto arquivos de livros/imagens que possam ter licenças próprias).
-
+📄 Licença
+MIT (exceto arquivos de livros/imagens que possam ter licenças próprias).
