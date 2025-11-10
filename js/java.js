@@ -6,6 +6,27 @@ document.addEventListener('DOMContentLoaded', () => {
   ============================ */
   const $  = (sel, el=document) => el.querySelector(sel);
   const $$ = (sel, el=document) => [...el.querySelectorAll(sel)];
+  const qs = new URLSearchParams(location.search);
+
+  const isLogged = () => {
+    try {
+      const u = JSON.parse(localStorage.getItem('ldk_current_user') || 'null');
+      return !!(u && (u.name || u.email));
+    } catch { return false; }
+  };
+
+  const PROTECTED = [
+    '/Catalogo.html', '/catalogo.html',
+    '/leitura.html',
+    '/perfil.html'
+  ];
+
+  const samePath = (href, target) => {
+    try {
+      const u = new URL(href, location.origin);
+      return u.pathname.endsWith(target);
+    } catch { return false; }
+  };
 
   /* ===========================
      NAV MOBILE (acessível)
@@ -24,14 +45,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     burger.addEventListener('click', () => toggleNav());
-    // fecha ao clicar em um link
-    links.addEventListener('click', (e) => {
-      if (e.target.tagName === 'A') toggleNav(false);
-    });
-    // fecha com ESC
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') toggleNav(false);
-    });
+    links.addEventListener('click', (e) => { if (e.target.tagName === 'A') toggleNav(false); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') toggleNav(false); });
   }
 
   /* ===========================
@@ -48,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ===========================
-     TOAST (com proteção anti-spam)
+     TOAST
   ============================ */
   let toastTimer = null;
   const toast = (msg) => {
@@ -63,14 +78,10 @@ document.addEventListener('DOMContentLoaded', () => {
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => el.classList.remove('show'), 2500);
   };
-  // opcional: expõe global p/ usar em outros módulos
   window._toast = toast;
 
   /* ===========================
      THEME (persistente + acessível)
-     - Respeita o tema do sistema se o usuário nunca escolheu
-     - Ícone minimalista (sol/lua)
-     - Atalho T para alternar
   ============================ */
   const THEME_KEY = 'ldk_theme';
   const root = document.documentElement;
@@ -89,7 +100,6 @@ document.addEventListener('DOMContentLoaded', () => {
     <line x1="17.66" y1="6.34"  x2="19.78" y2="4.22"/>
   </g>
 </svg>`;
-
   const ICON_MOON = `
 <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
   <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"
@@ -110,21 +120,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const applyTheme = (mode, { persist = false } = {}) => {
     if (mode === 'dark') root.setAttribute('data-theme', 'dark');
     else root.removeAttribute('data-theme');
-    if (persist) localStorage.setItem(THEME_KEY, mode);
+    if (persist) localStorage.setItem('ldk_theme', mode);
     refreshThemeUI();
   };
 
-  // inicialização: usa salvo; senão, segue o sistema (sem persistir)
   const savedTheme = localStorage.getItem(THEME_KEY);
   if (savedTheme === 'light' || savedTheme === 'dark') {
     applyTheme(savedTheme, { persist: false });
   } else {
     const systemDark = !!prefersQuery?.matches;
     applyTheme(systemDark ? 'dark' : 'light', { persist: false });
-    // se o usuário nunca escolheu, reagimos às mudanças do sistema
     prefersQuery?.addEventListener?.('change', (e) => {
-      const stillNoChoice = !localStorage.getItem(THEME_KEY);
-      if (stillNoChoice) applyTheme(e.matches ? 'dark' : 'light', { persist: false });
+      if (!localStorage.getItem(THEME_KEY)) applyTheme(e.matches ? 'dark' : 'light', { persist: false });
     });
   }
 
@@ -134,7 +141,6 @@ document.addEventListener('DOMContentLoaded', () => {
       applyTheme(isDark ? 'light' : 'dark', { persist: true });
     });
   }
-  // Atalho: T alterna o tema (fora de inputs)
   document.addEventListener('keydown', (e) => {
     if (e.key?.toLowerCase() === 't' && !/input|textarea|select/i.test(e.target.tagName)) {
       const isDark = root.getAttribute('data-theme') === 'dark';
@@ -143,13 +149,61 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ===========================
+     PROTEÇÃO DE ROTAS (client-side)
+     - bloqueia páginas com <body data-requires-auth="true">
+     - intercepta cliques em links protegidos
+  ============================ */
+  const protectRoute = () => {
+    const need = document.body?.dataset?.requiresAuth === 'true';
+    if (!need) return;
+    if (!isLogged()) {
+      sessionStorage.setItem('ldk_return_to', location.href);
+      location.replace('index.html?auth=1');
+    }
+  };
+  protectRoute();
+
+  // Intercepta cliques para páginas protegidas quando não logado
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a[href]');
+    if (!a) return;
+
+    // “Continuar lendo” (já tratamos mais abaixo também)
+    if (a.getAttribute('href')?.startsWith('leitura.html')) {
+      try {
+        const url = new URL(a.getAttribute('href'), location.href);
+        const id = url.searchParams.get('id');
+        if (id) {
+          const existing = JSON.parse(localStorage.getItem('lk:lastReading') || 'null') || {};
+          const snapshot = Object.assign({}, existing, { id, ts: Date.now() });
+          localStorage.setItem('lk:lastReading', JSON.stringify(snapshot));
+        }
+      } catch {}
+    }
+
+    if (isLogged()) return;
+    const href = a.getAttribute('href');
+
+    // Checa se é um path protegido
+    if (PROTECTED.some(p => samePath(href, p))) {
+      e.preventDefault();
+      sessionStorage.setItem('ldk_return_to', new URL(href, location.href).href);
+      location.href = 'index.html?auth=1';
+    }
+  });
+
+  // Se veio com ?auth=1, avisa
+  if (qs.get('auth') === '1') {
+    setTimeout(() => toast('Faça login para continuar.'), 100);
+  }
+
+  /* ===========================
      ÁREA DO USUÁRIO NO TOPO
   ============================ */
   (function renderUserArea() {
     const userArea = $('#user-area');
-    const topLogin = $('.nav-links a[href="index.html"]'); // "Entrar"
+    const topLogin = $('.nav-links a[href="index.html"]');
     const current = JSON.parse(localStorage.getItem('ldk_current_user') || 'null');
-
     if (!userArea) return;
 
     if (current && (current.name || current.email)) {
@@ -177,6 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
       sair.textContent = 'Sair';
       sair.addEventListener('click', () => {
         localStorage.removeItem('ldk_current_user');
+        document.cookie = 'ldk_auth=; Path=/; Max-Age=0';
         location.reload();
       });
 
@@ -203,7 +258,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const pass  = loginForm.querySelector('#password').value.trim();
 
       if (!email || !pass) { toast('Preencha email e senha.'); return; }
-      // validação simples de e-mail
       if (!/^\S+@\S+\.\S+$/.test(email)) { toast('Informe um e-mail válido.'); return; }
 
       const users = JSON.parse(localStorage.getItem('ldk_users') || '[]');
@@ -211,8 +265,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (ok) {
         localStorage.setItem('ldk_current_user', JSON.stringify({ name: ok.name, email: ok.email }));
+        // Cookie leve (útil se usar middleware no Vercel futuramente)
+        document.cookie = 'ldk_auth=1; Path=/; SameSite=Lax; Secure; Max-Age=2592000';
+
         toast('Login realizado!');
-        setTimeout(() => location.href = 'Pag01.html', 700);
+        const back = sessionStorage.getItem('ldk_return_to');
+        if (back) {
+          sessionStorage.removeItem('ldk_return_to');
+          location.href = back;
+        } else {
+          location.href = 'Pag01.html';
+        }
       } else {
         toast('E-mail ou senha inválidos. Crie uma conta.');
       }
@@ -240,16 +303,16 @@ document.addEventListener('DOMContentLoaded', () => {
       users.push({ name, email, password: pass });
       localStorage.setItem('ldk_users', JSON.stringify(users));
       localStorage.setItem('ldk_current_user', JSON.stringify({ name, email }));
+      document.cookie = 'ldk_auth=1; Path=/; SameSite=Lax; Secure; Max-Age=2592000';
+
       toast('Conta criada com sucesso!');
-      setTimeout(() => location.href = 'Pag01.html', 700);
+      const back = sessionStorage.getItem('ldk_return_to');
+      location.href = back || 'Pag01.html';
     });
   }
 
   /* ===========================
      CONTINUAR LENDO (Home)
-     - Lê o último progresso salvo em localStorage ("lk:lastReading")
-     - Renderiza um card em #continue-reading
-     - Estilos do card estão no style.css (.continue-card)
   ============================ */
   (function renderContinueReading(){
     const mount = $('#continue-reading');
@@ -268,13 +331,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     mount.innerHTML = `
       <article class="continue-card" role="region" aria-label="Continuar lendo">
-        <div class="media"><img src="${safeCover}" alt="Capa do livro ${title}"></div>
+        <div class="media"><img src="${safeCover}" alt="Capa do livro ${title || ''}"></div>
         <div class="body">
           <div class="card-title">Continuar lendo</div>
           <div class="card-sub"><strong>${title || 'Livro'}</strong>${author ? ' — ' + author : ''}</div>
           <small class="form-hint">${pageInfo} • ${when}</small>
           <div class="actions">
-            <a class="btn btn-primary" href="leitura.html?id=${encodeURIComponent(id)}">Continuar</a>
+            <a class="btn btn-primary" href="leitura.html?id=${encodeURIComponent(id || '')}">Continuar</a>
             <a class="btn" href="Catalogo.html">Trocar de livro</a>
           </div>
         </div>
@@ -282,9 +345,7 @@ document.addEventListener('DOMContentLoaded', () => {
   })();
 
   /* ===========================
-     (Opcional) Pré-salvar "entrada" ao clicar em Ler
-     - Caso o usuário clique em um link para leitura, gravamos um snapshot mínimo.
-     - O leitor (leitura.html) sobrescreve com dados completos e página atual.
+     Snapshot rápido ao clicar em “Ler”
   ============================ */
   document.addEventListener('click', (e) => {
     const a = e.target.closest('a[href^="leitura.html"]');
